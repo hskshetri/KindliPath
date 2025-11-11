@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bright Futures | Global Developmental Delay Support</title>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons (Lucide) --><script src="https://unpkg.com/lucide-react@latest/dist/lucide-react.js"></script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Simple icon component styling */
+        .icon-wrapper {
+            background-color: #e0f2f1; /* Light teal */
+            color: #00796b; /* Dark teal */
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Flowchart Specific Styles */
+        .flowchart-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .flowchart-node {
+            background-color: #3f51b5; /* Blue */
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin: 0.75rem 0;
+            text-align: center;
+            font-weight: 600;
+            min-width: 180px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative; /* For connector lines */
+            z-index: 10;
+        }
+
+        .flowchart-node.teal {
+            background-color: #00796b; /* Teal */
+        }
+
+        .flowchart-node.gray {
+            background-color: #4a5568; /* Gray */
+        }
+
+        .flowchart-node.light-blue {
+            background-color: #5d6edc; /* Lighter blue for special nodes */
+        }
+
+        /* Connector Line Styles (using pseudo-elements for simplicity) */
+        .flowchart-node::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: #9e9e9e; /* Grey for connectors */
+            z-index: 5;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Vertical connectors */
+        .flowchart-node.connect-down::after {
+            height: 1.5rem; /* Connects to the margin of the next node */
+            bottom: -1.5rem;
+        }
+        
+        /* Specific connector adjustments for branching */
+        .flowchart-branch-start::after {
+            bottom: -1rem; /* Adjust to allow for branching */
+            height: 1rem;
+        }
+
+        .flowchart-branch-line {
+            position: absolute;
+            background-color: #9e9e9e;
+            height: 2px;
+            z-index: 5;
+            top: 50%; /* Center vertically within the horizontal span */
+            transform: translateY(-50%);
+        }
+
+        .flowchart-h-connector-left {
+            left: -3rem; /* Extends left from node */
+            width: 3rem;
+        }
+        .flowchart-h-connector-right {
+            right: -3rem; /* Extends right from node */
+            width: 3rem;
+        }
+        .flowchart-h-connector-main {
+            left: -120px; /* Adjust based on node width and desired spacing */
+            right: -120px;
+            width: calc(100% + 240px); /* Total width including negative margins */
+            top: -0.75rem; /* Position above branching nodes */
+            background-color: transparent; /* Main branch line */
+            height: 0;
+        }
+
+
+        /* Specific styles for the branching structure */
+        .flowchart-branch {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+            margin-top: 1.5rem; /* Space for connecting lines */
+            margin-bottom: 1.5rem;
+        }
+
+        .flowchart-branch-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding: 0 2rem; /* Spacing between branches */
+        }
+
+        .flowchart-branch-item::before { /* Vertical line up to the horizontal connector */
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 2rem; /* Connects to the horizontal line */
+            background-color: #9e9e9e;
+            top: -2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+        }
+
+        .flowchart-branch-horizontal {
+            position: absolute;
+            width: calc(100% - 4rem); /* Adjust based on padding of branch items */
+            height: 2px;
+            background-color: #9e9e9e;
+            top: -2rem; /* Should align with the top of the vertical lines */
+            left: 2rem; /* Matches padding */
+            z-index: 4;
+        }
+
+        .flowchart-merge-point::before { /* Merging line from branches */
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 1.5rem; /* Connects to the node above */
+            background-color: #9e9e9e;
+            top: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+        }
+
+        .flowchart-merge-point {
+            position: relative;
+            margin-top: 1.5rem; /* Space for incoming lines */
+        }
+        
+        /* Horizontal connector for "THERAPY" level to "PROGRESS TRACKING" and "CLINIC" to "THERAPY" */
+        .horizontal-line {
+            position: absolute;
+            height: 2px;
+            background-color: #9e9e9e;
+            z-index: 5;
+        }
+
+        .connect-left::before {
+            content: '';
+            position: absolute;
+            width: 20px; /* Length of the horizontal part */
+            height: 2px;
+            background-color: #9e9e9e;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .connect-top-left::before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 20px; /* Vertical segment */
+            background-color: #9e9e9e;
+            left: -20px; /* Align with horizontal segment */
+            top: -20px; /* Position above */
+            z-index: 5;
+        }
+
+        .connect-curve-tl { /* From "Negative Result" to "End" */
+            position: absolute;
+            width: 20px;
+            height: 40px;
+            border-left: 2px solid #9e9e9e;
+            border-bottom: 2px solid #9e9e9e;
+            border-bottom-left-radius: 10px;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-100%);
+            z-index: 5;
+        }
+
+        .connect-v-line-left { /* Vertical line from the curve */
+            position: absolute;
+            width: 2px;
+            background-color: #9e9e9e;
+            height: calc(100% + 12rem); /* Extend down */
+            left: -20px;
+            top: 0;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header & Navigation --><header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <!-- Logo --><a href="#" class="text-2xl font-bold text-teal-700">
+                Bright Futures
+            </a>
+
+            <!-- Desktop Nav --><div class="hidden md:flex space-x-6 items-center">
+                <a href="#gdd" class="text-gray-600 hover:text-teal-600 transition-colors">About GDD</a>
+                <a href="#services" class="text-gray-600 hover:text-teal-600 transition-colors">Our Services</a>
+                <a href="#approach" class="text-gray-600 hover:text-teal-600 transition-colors">Our Approach</a>
+                <a href="#process" class="text-gray-600 hover:text-teal-600 transition-colors">Our Process</a>
+                <a href="#team" class="text-gray-600 hover:text-teal-600 transition-colors">Our Team</a>
+                <a href="#contact" class="bg-teal-600 text-white px-4 py-2 rounded-full font-medium hover:bg-teal-700 transition-colors shadow-sm">
+                    Book Consultation
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button --><button id="menu-btn" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </nav>
+
+        <!-- Mobile Menu (Hidden by default) --><div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg border-t">
+            <a href="#gdd" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">About GDD</a>
+            <a href="#services" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Services</a>
+            <a href="#approach" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Approach</a>
+            <a href="#process" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Process</a>
+            <a href="#team" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Team</a>
+            <a href="#contact" class="block px-4 py-3 m-2 bg-teal-600 text-white text-center rounded-full font-medium hover:bg-teal-700">
+                Book Consultation
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content --><main>
+        <!-- 1. Hero Section --><section class="bg-white py-16 sm:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+                <!-- Hero Text --><div class="text-center md:text-left">
+                    <span class="text-teal-600 font-semibold tracking-wide uppercase">Support for Every Step</span>
+                    <h1 class="mt-2 text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+                        Supporting Your Child's Unique Developmental Journey
+                    </h1>
+                    <p class="mt-6 text-lg text-gray-600">
+                        We provide compassionate, expert-led assessment, therapy, and support services for children with Global Developmental Delay. Let's unlock your child's full potential together.
+                    </p>
+                    <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                        <a href="#services" class="inline-block w-full sm:w-auto text-center px-8 py-3 bg-teal-600 text-white font-medium rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
+                            Explore Our Services
+                        </a>
+                        <a href="#contact" class="inline-block w-full sm:w-auto text-center px-8 py-3 bg-gray-100 text-gray-800 font-medium rounded-full hover:bg-gray-200 transition-transform hover:scale-105">
+                            Schedule a Call
+                        </a>
+                    </div>
+                </div>
+                <!-- Hero Image --><div class="mt-10 md:mt-0">
+                    <img src="https://placehold.co/600x500/E0F2F1/00796B?text=Therapist+%26+Child+Playing" 
+                         alt="Therapist and child playing with colorful blocks" 
+                         class="rounded-lg shadow-xl aspect-[5/4] w-full object-cover">
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. What is GDD? --><section id="gdd" class="py-16 sm:py-24 bg-teal-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center">
+                <h2 class="text-3xl font-bold text-gray-900">
+                    Understanding Global Developmental Delay (GDD)
+                </h2>
+                <p class="mt-4 text-lg text-gray-700">
+                    Global Developmental Delay (GDD) is a term used when a child shows significant delays in two or more main areas of development. These areas, often called "milestones," include:
+                </p>
+                <!-- Icons for Developmental Areas --><div id="icon-container" class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <!-- Icons will be rendered here by React --></div>
+                <p class="mt-12 text-lg text-gray-700">
+                    An early and accurate assessment is the first step toward getting your child the right support. We are here to guide you through that process with empathy and expertise.
+                </p>
+            </div>
+        </section>
+
+        <!-- 3. Our Services (The "Tests" and "Services") --><section id="services" class="py-16 sm:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-teal-600 font-semibold tracking-wide uppercase">Our Services</span>
+                    <h2 class="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl">
+                        A Path to Progress for Your Child
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600">
+                        We offer a comprehensive suite of services, from initial assessment to ongoing therapy, all tailored to your child's individual needs.
+                    </p>
+                </div>
+
+                <!-- Services Grid --><div class="mt-16 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Service 1: Assessment --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-xl font-semibold text-teal-800">1. Comprehensive Developmental Assessment</h3>
+                        <p class="mt-4 text-gray-700">
+                            This is our "test" - a thorough, play-based evaluation. Our specialists assess your child's motor skills, speech, cognition, and social-emotional development to build a complete profile of their unique strengths and challenges.
+                        </p>
+                    </div>
+                    <!-- Service 2: Therapy Plan --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-xl font-semibold text-teal-800">2. Individualized Intervention Plan</h3>
+                        <p class="mt-4 text-gray-700">
+                            Based on the assessment, we create a customized therapy plan. This plan integrates evidence-based strategies from:
+                        </p>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-gray-700">
+                            <li>Speech & Language Therapy</li>
+                            <li>Occupational Therapy (OT)</li>
+                            <li>Physical Therapy (PT)</li>
+                            <li>Early Intervention Education</li>
+                        </ul>
+                    </div>
+                    <!-- Service 3: Parent Coaching --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-xl font-semibold text-teal-800">3. Parent & Caregiver Coaching</h3>
+                        <p class="mt-4 text-gray-700">
+                            You are your child's most important partner. We empower you with the tools, strategies, and confidence to support your child's development in your everyday family life.
+                        </p>
+                    </div>
+                    <!-- Add more services as needed --></div>
+            </div>
+        </section>
+
+        <!-- 4. Our Approach --><section id="approach" class="py-16 sm:py-24 bg-teal-700 text-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <img src="https://placehold.co/600x500/FFFFFF/00796B?text=Our+Team+Collaborating" 
+                         alt="Diverse team of therapists collaborating" 
+                         class="rounded-lg shadow-xl aspect-[5/4] w-full object-cover">
+                </div>
+                <div class="order-1 md:order-2">
+                    <h2 class="text-3xl font-bold sm:text-4xl">
+                        Our Compassionate, Evidence-Based Approach
+                    </h2>
+                    <p class="mt-4 text-lg text-teal-50">
+                        We believe progress happens when expertise meets empathy. Our philosophy is built on three core pillars:
+                    </p>
+                    <ul class="mt-8 space-y-6">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-8 h-8 bg-white text-teal-700 rounded-full flex items-center justify-center font-bold">1</span>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-semibold">Child-Centered & Play-Based</h4>
+                                <p class="text-teal-100">Learning happens best through play. Our sessions are fun, engaging, and tailored to your child's interests to foster a love of learning.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-8 h-8 bg-white text-teal-700 rounded-full flex items-center justify-center font-bold">2</span>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-semibold">Family-Focused Partnership</h4>
+                                <p class="text-teal-100">We work *with* you, not just *for* you. You are a key member of the therapy team, and we value your insights and goals.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-8 h-8 bg-white text-teal-700 rounded-full flex items-center justify-center font-bold">3</span>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-semibold">Collaborative, Expert Care</h4>
+                                <p class="text-teal-100">Our team of specialists collaborates to ensure a holistic approach, coordinating with pediatricians, schools, and other providers.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Our Process (Integrated Flowchart) --><section id="process" class="py-16 sm:py-24 bg-gray-100">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-5xl">
+                <span class="text-teal-600 font-semibold tracking-wide uppercase">Our Journey Together</span>
+                <h2 class="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl">
+                    Our Step-by-Step Support Process
+                </h2>
+                <p class="mt-4 text-lg text-gray-600 mb-12">
+                    From initial assessment to ongoing progress tracking, we guide families through every stage of their child's developmental journey.
+                </p>
+
+                <div class="flowchart-container">
+                    <!-- Level 1: Initial Assessment --><div class="flowchart-node light-blue connect-down flowchart-branch-start">Initial Developmental Assessment</div>
+
+                    <!-- Level 2: Branching Results --><div class="flowchart-branch">
+                        <div class="flowchart-branch-horizontal"></div>
+
+                        <div class="flowchart-branch-item">
+                            <div class="flowchart-node gray relative connect-down">
+                                Negative Result
+                                <div class="connect-curve-tl"></div>
+                                <div class="connect-v-line-left"></div>
+                            </div>
+                        </div>
+
+                        <div class="flowchart-branch-item">
+                            <div class="flowchart-node teal connect-down">
+                                GDD Identified
+                            </div>
+                        </div>
+
+                        <div class="flowchart-branch-item">
+                            <div class="flowchart-node teal connect-down">
+                                Extreme GDD Identified
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Level 3: Doctor Consultancy / Clinic --><div class="flowchart-branch mt-0">
+                        <div class="flowchart-branch-item">
+                            <div class="flowchart-node gray w-0 h-0 p-0 m-0 invisible"></div> <!-- Spacer --></div>
+                        <div class="flowchart-branch-item">
+                            <div class="flowchart-node blue connect-down">Doctor Consultation</div>
+                        </div>
+                        <div class="flowchart-branch-item">
+                            <div class="flowchart-node blue connect-down relative">
+                                Clinic Visit
+                                <div class="horizontal-line w-16 left-[-6rem] top-1/2 -translate-y-1/2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Merged: Therapy --><div class="flowchart-node teal connect-down flowchart-merge-point">Personalized Therapy</div>
+
+                    <!-- Level 4: Progress Tracking & Other Services --><div class="flowchart-branch">
+                        <div class="flowchart-branch-item">
+                            <div class="flowchart-node blue connect-down relative">
+                                Progress Tracking
+                                <div class="horizontal-line w-20 right-[-6rem] top-1/2 -translate-y-1/2"></div>
+                            </div>
+                        </div>
+                        <div class="flowchart-branch-item">
+                            <div class="flowchart-node gray w-0 h-0 p-0 m-0 invisible"></div> <!-- Spacer --></div>
+                        <div class="flowchart-branch-item">
+                            <div class="flowchart-node blue connect-down">24x7 Help Service</div>
+                        </div>
+                    </div>
+
+                    <!-- Level 5: Virtual Webinar --><div class="flowchart-node blue connect-down flowchart-merge-point">Virtual Webinar</div>
+
+                    <!-- Level 6: End --><div class="flowchart-node gray">Journey Ends / Continued Support</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 6. Our Team --><section id="team" class="py-16 sm:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">
+                        Meet Our Team of Specialists
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600">
+                        We are a dedicated, multidisciplinary team of licensed professionals committed to child development.
+                    </p>
+                </div>
+                <!-- Team Grid --><div class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Team Member 1 --><div class="text-center">
+                        <img class="w-40 h-40 rounded-full mx-auto shadow-lg object-cover" src="https://placehold.co/160x160/E0F2F1/00796B?text=Dr.+Jane+D." alt="Dr. Jane Doe">
+                        <h4 class="mt-6 text-xl font-semibold text-gray-900">Dr. Jane Doe, PhD, BCBA</h4>
+                        <p class="text-teal-600">Clinical Director & Psychologist</p>
+                        <p class="mt-2 text-gray-600">With 15 years of experience, Dr. Doe specializes in developmental assessments and behavioral support.</p>
+                    </div>
+                    <!-- Team Member 2 --><div class="text-center">
+                        <img class="w-40 h-40 rounded-full mx-auto shadow-lg object-cover" src="https://placehold.co/160x160/E0F2F1/00796B?text=Mark+S." alt="Mark Smith">
+                        <h4 class="mt-6 text-xl font-semibold text-gray-900">Mark Smith, M.S., CCC-SLP</h4>
+                        <p class="text-teal-600">Lead Speech-Language Pathologist</p>
+                        <p class="mt-2 text-gray-600">Mark is passionate about helping children find their voice, from first words to complex conversations.</p>
+                    </div>
+                    <!-- Team Member 3 --><div class="text-center">
+                        <img class="w-40 h-40 rounded-full mx-auto shadow-lg object-cover" src="https://placehold.co/160x160/E0F2F1/00796B?text=Emily+C." alt="Emily Chen">
+                        <h4 class="mt-6 text-xl font-semibold text-gray-900">Emily Chen, OTR/L</h4>
+                        <p class="text-teal-600">Lead Occupational Therapist</p>
+                        <p class="mt-2 text-gray-600">Emily uses play-based activities to help children build fine motor, sensory, and self-care skills.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Testimonial --><section class="bg-teal-50 py-16">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-teal-600 opacity-50"><path d="M3 21h18M7 21v-4a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v4M6 10c0-1.886.667-3.6 1.857-4.857C8.943 4.029 10.4 3.5 12 3.5c1.6 0 3.057.529 4.143 1.643C17.333 6.4 18 8.114 18 10c0 4-3 6-6 6s-6-2-6-6z"></path></svg>
+                <blockquote class="mt-4">
+                    <p class="text-2xl font-medium text-gray-900">
+                        "The team at Bright Futures gave us the tools and, most importantly, the hope we needed. Seeing our son's progress in just a few months has been incredible. We finally feel like we have a true partner."
+                    </p>
+                    <footer class="mt-6">
+                        <p class="text-base font-medium text-gray-800">Sarah K., Parent</p>
+                    </footer>
+                </blockquote>
+            </div>
+        </section>
+
+        <!-- 8. Contact / CTA --><section id="contact" class="py-16 sm:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl text-center">
+                <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">
+                    Ready to Take the Next Step?
+                </h2>
+                <p class="mt-4 text-lg text-gray-600">
+                    Your journey starts with a simple conversation. Schedule a free, no-obligation 15-minute consultation with our care coordinator to discuss your concerns and learn how we can help.
+                </p>
+                <a href="#" class="mt-8 inline-block px-10 py-4 bg-teal-600 text-white font-medium text-lg rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
+                    Book Your Free Consultation
+                </a>
+                <p class="mt-6 text-gray-600">
+                    Or call us at <a href="tel:123-456-7890" class="font-semibold text-teal-700 hover:underline">123-456-7890</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer --><footer class="bg-gray-800 text-gray-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- About --><div>
+                    <h4 class="text-xl font-bold text-white">Bright Futures</h4>
+                    <p class="mt-4 text-gray-400">
+                        Compassionate support for children with Global Developmental Delay and their families.
+                    </p>
+                    <p class="mt-2 text-gray-400">123 Main Street, Anytown, USA</p>
+                    <p class="mt-1 text-gray-400">contact@brightfutures.dev</p>
+                </div>
+                <!-- Quick Links --><div>
+                    <h5 class="text-lg font-semibold text-white tracking-wide">Quick Links</h5>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#gdd" class="hover:text-white">About GDD</a></li>
+                        <li><a href="#services" class="hover:text-white">Our Services</a></li>
+                        <li><a href="#approach" class="hover:text-white">Our Approach</a></li>
+                        <li><a href="#process" class="hover:text-white">Our Process</a></li>
+                        <li><a href="#team" class="hover:text-white">Our Team</a></li>
+                        <li><a href="#contact" class="hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                <!-- Newsletter (Optional) --><div>
+                    <h5 class="text-lg font-semibold text-white tracking-wide">Stay Updated</h5>
+                    <p class="mt-4 text-gray-400">Get helpful resources and news delivered to your inbox.</p>
+                    <form class="mt-4 flex">
+                        <input type="email" placeholder="Your email" class="w-full px-4 py-2 rounded-l-md text-gray-900 focus:outline-none" aria-label="Email for newsletter">
+                        <button class="bg-teal-600 text-white px-4 py-2 rounded-r-md hover:bg-teal-700">
+                            Sub
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-10 pt-8 border-t border-gray-700 text-center text-gray-500">
+                <p>&copy; 2025 Bright Futures. All rights reserved. | <a href="#" class="hover:text-white">Privacy Policy</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu --><script>
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close menu when a link is clicked
+        mobileMenu.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+    </script>
+    
+    <!-- React script to render Lucide icons --><script type="text/babel">
+      window.onload = function() {
+        const { createRoot } = ReactDOM;
+        const { createElement: e } = React;
+        // Fix: Access lucideReact from the global 'window' object
+        const { Smile, Brain, MessageSquare, Footprints } = window.lucideReact;
+
+        const icons = [
+            { icon: MessageSquare, label: "Speech & Language" },
+            { icon: Footprints, label: "Motor Skills (Fine & Gross)" },
+            { icon: Brain, label: "Cognitive Skills" },
+            { icon: Smile, label: "Social & Emotional Skills" },
+        ];
+
+        function IconCard({ icon, label }) {
+            return e('div', { className: "flex flex-col items-center" },
+                e('div', { className: "icon-wrapper" },
+                    e(icon, { size: 32, strokeWidth: 2 })
+                ),
+                e('h4', { className: "mt-4 text-lg font-medium text-gray-800" }, label)
+            );
+        }
+
+        const App = () => {
+            return e(React.Fragment, null,
+                icons.map((item, index) => e(IconCard, { key: index, icon: item.icon, label: item.label }))
+            );
+        };
+
+        const domContainer = document.querySelector('#icon-container');
+        const root = createRoot(domContainer);
+        root.render(e(App));
+      }
+    </script>
+</body>
+</html>
+
