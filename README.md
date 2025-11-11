@@ -1,4 +1,4 @@
-# Mr-Bumble
+# KindliPath
 🌍 Advancing Healthcare for Global Developmental Delay (GDD)
 
 This project focuses on developing innovative healthcare solutions to support individuals affected by Global Developmental Delay (GDD). By integrating technology, data-driven insights, and inclusive healthcare practices, the project aims to enhance early diagnosis, therapy management, and developmental support.
