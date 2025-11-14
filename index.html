@@ -28,200 +28,6 @@
             align-items: center;
             justify-content: center;
         }
-
-        /* Flowchart Specific Styles */
-        .flowchart-container {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .flowchart-node {
-            background-color: #3f51b5; /* Blue */
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            margin: 0.75rem 0;
-            text-align: center;
-            font-weight: 600;
-            min-width: 180px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            position: relative; /* For connector lines */
-            z-index: 10;
-        }
-
-        .flowchart-node.teal {
-            background-color: #00796b; /* Teal */
-        }
-
-        .flowchart-node.gray {
-            background-color: #4a5568; /* Gray */
-        }
-
-        .flowchart-node.light-blue {
-            background-color: #5d6edc; /* Lighter blue for special nodes */
-        }
-
-        /* Connector Line Styles (using pseudo-elements for simplicity) */
-        .flowchart-node::after {
-            content: '';
-            position: absolute;
-            width: 2px;
-            background-color: #9e9e9e; /* Grey for connectors */
-            z-index: 5;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* Vertical connectors */
-        .flowchart-node.connect-down::after {
-            height: 1.5rem; /* Connects to the margin of the next node */
-            bottom: -1.5rem;
-        }
-        
-        /* Specific connector adjustments for branching */
-        .flowchart-branch-start::after {
-            bottom: -1rem; /* Adjust to allow for branching */
-            height: 1rem;
-        }
-
-        .flowchart-branch-line {
-            position: absolute;
-            background-color: #9e9e9e;
-            height: 2px;
-            z-index: 5;
-            top: 50%; /* Center vertically within the horizontal span */
-            transform: translateY(-50%);
-        }
-
-        .flowchart-h-connector-left {
-            left: -3rem; /* Extends left from node */
-            width: 3rem;
-        }
-        .flowchart-h-connector-right {
-            right: -3rem; /* Extends right from node */
-            width: 3rem;
-        }
-        .flowchart-h-connector-main {
-            left: -120px; /* Adjust based on node width and desired spacing */
-            right: -120px;
-            width: calc(100% + 240px); /* Total width including negative margins */
-            top: -0.75rem; /* Position above branching nodes */
-            background-color: transparent; /* Main branch line */
-            height: 0;
-        }
-
-
-        /* Specific styles for the branching structure */
-        .flowchart-branch {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            position: relative;
-            margin-top: 1.5rem; /* Space for connecting lines */
-            margin-bottom: 1.5rem;
-        }
-
-        .flowchart-branch-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            padding: 0 2rem; /* Spacing between branches */
-        }
-
-        .flowchart-branch-item::before { /* Vertical line up to the horizontal connector */
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 2rem; /* Connects to the horizontal line */
-            background-color: #9e9e9e;
-            top: -2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 5;
-        }
-
-        .flowchart-branch-horizontal {
-            position: absolute;
-            width: calc(100% - 4rem); /* Adjust based on padding of branch items */
-            height: 2px;
-            background-color: #9e9e9e;
-            top: -2rem; /* Should align with the top of the vertical lines */
-            left: 2rem; /* Matches padding */
-            z-index: 4;
-        }
-
-        .flowchart-merge-point::before { /* Merging line from branches */
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 1.5rem; /* Connects to the node above */
-            background-color: #9e9e9e;
-            top: -1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 5;
-        }
-
-        .flowchart-merge-point {
-            position: relative;
-            margin-top: 1.5rem; /* Space for incoming lines */
-        }
-        
-        /* Horizontal connector for "THERAPY" level to "PROGRESS TRACKING" and "CLINIC" to "THERAPY" */
-        .horizontal-line {
-            position: absolute;
-            height: 2px;
-            background-color: #9e9e9e;
-            z-index: 5;
-        }
-
-        .connect-left::before {
-            content: '';
-            position: absolute;
-            width: 20px; /* Length of the horizontal part */
-            height: 2px;
-            background-color: #9e9e9e;
-            left: -20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .connect-top-left::before {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 20px; /* Vertical segment */
-            background-color: #9e9e9e;
-            left: -20px; /* Align with horizontal segment */
-            top: -20px; /* Position above */
-            z-index: 5;
-        }
-
-        .connect-curve-tl { /* From "Negative Result" to "End" */
-            position: absolute;
-            width: 20px;
-            height: 40px;
-            border-left: 2px solid #9e9e9e;
-            border-bottom: 2px solid #9e9e9e;
-            border-bottom-left-radius: 10px;
-            left: -20px;
-            top: 50%;
-            transform: translateY(-100%);
-            z-index: 5;
-        }
-
-        .connect-v-line-left { /* Vertical line from the curve */
-            position: absolute;
-            width: 2px;
-            background-color: #9e9e9e;
-            height: calc(100% + 12rem); /* Extend down */
-            left: -20px;
-            top: 0;
-            z-index: 5;
-        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -236,7 +42,6 @@
                 <a href="#gdd" class="text-gray-600 hover:text-teal-600 transition-colors">About GDD</a>
                 <a href="#services" class="text-gray-600 hover:text-teal-600 transition-colors">Our Services</a>
                 <a href="#approach" class="text-gray-600 hover:text-teal-600 transition-colors">Our Approach</a>
-                <a href="#process" class="text-gray-600 hover:text-teal-600 transition-colors">Our Process</a>
                 <a href="#team" class="text-gray-600 hover:text-teal-600 transition-colors">Our Team</a>
                 <a href="#contact" class="bg-teal-600 text-white px-4 py-2 rounded-full font-medium hover:bg-teal-700 transition-colors shadow-sm">
                     Book Consultation
@@ -252,7 +57,6 @@
             <a href="#gdd" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">About GDD</a>
             <a href="#services" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Services</a>
             <a href="#approach" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Approach</a>
-            <a href="#process" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Process</a>
             <a href="#team" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Team</a>
             <a href="#contact" class="block px-4 py-3 m-2 bg-teal-600 text-white text-center rounded-full font-medium hover:bg-teal-700">
                 Book Consultation
@@ -271,19 +75,56 @@
                     <p class="mt-6 text-lg text-gray-600">
                         We provide compassionate, expert-led assessment, therapy, and support services for children with Global Developmental Delay. Let's unlock your child's full potential together.
                     </p>
-                    <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                    <div class="mt-8 flex justify-center md:justify-start">
                         <a href="#services" class="inline-block w-full sm:w-auto text-center px-8 py-3 bg-teal-600 text-white font-medium rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
                             Explore Our Services
                         </a>
-                        <a href="#contact" class="inline-block w-full sm:w-auto text-center px-8 py-3 bg-gray-100 text-gray-800 font-medium rounded-full hover:bg-gray-200 transition-transform hover:scale-105">
-                            Schedule a Call
-                        </a>
                     </div>
                 </div>
-                <!-- Hero Image --><div class="mt-10 md:mt-0">
-                    <img src="https://placehold.co/600x500/E0F2F1/00796B?text=Therapist+%26+Child+Playing" 
-                         alt="Therapist and child playing with colorful blocks" 
-                         class="rounded-lg shadow-xl aspect-[5/4] w-full object-cover">
+                <!-- Hero Image Slideshow -->
+                <div class="mt-10 md:mt-0">
+                    <div id="slideshow-container" class="relative rounded-lg shadow-xl aspect-[5/4] w-full overflow-hidden">
+                        <!-- Slide 1 -->
+                        <div class="slide absolute top-0 left-0 w-full h-full">
+                            <img src="https://placehold.co/600x500/E0F2F1/00796B?text=Therapist+%26+Child+Playing" 
+                                 alt="Therapist and child playing with colorful blocks" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        <!-- Slide 2 -->
+                        <div class="slide absolute top-0 left-0 w-full h-full hidden">
+                            <img src="https://placehold.co/600x500/B2DFDB/004D40?text=Sensory+Integration+Room" 
+                                 alt="Child in a sensory integration room" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        <!-- Slide 3 -->
+                        <div class="slide absolute top-0 left-0 w-full h-full hidden">
+                            <img src="https://placehold.co/600x500/80CBC4/004D40?text=Speech+Therapy+Session" 
+                                 alt="Speech therapist working with a child" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        <!-- Slide 4 -->
+                        <div class="slide absolute top-0 left-0 w-full h-full hidden">
+                            <img src="https://placehold.co/600x500/4DB6AC/004D40?text=Building+Fine+Motor+Skills" 
+                                 alt="Child's hands stacking colorful rings" 
+                                 class="w-full h-full object-cover">
+                        </div>
+            
+                        <!-- Navigation Buttons -->
+                        <button id="prev-slide" class="absolute top-1/2 left-3 transform -translate-y-1/2 bg-white/50 hover:bg-white rounded-full p-2 focus:outline-none transition z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-800"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <button id="next-slide" class="absolute top-1/2 right-3 transform -translate-y-1/2 bg-white/50 hover:bg-white rounded-full p-2 focus:outline-none transition z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-800"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+            
+                        <!-- Dot Indicators -->
+                        <div id="slide-dots" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+                            <button class="slide-dot w-3 h-3 bg-white rounded-full opacity-50 transition"></button>
+                            <button class="slide-dot w-3 h-3 bg-white rounded-full opacity-50 transition"></button>
+                            <button class="slide-dot w-3 h-3 bg-white rounded-full opacity-50 transition"></button>
+                            <button class="slide-dot w-3 h-3 bg-white rounded-full opacity-50 transition"></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -316,32 +157,52 @@
                     </p>
                 </div>
 
-                <!-- Services Grid --><div class="mt-16 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Service 1: Assessment --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200">
-                        <h3 class="text-xl font-semibold text-teal-800">1. Comprehensive Developmental Assessment</h3>
+                <!-- Services Grid (Updated to 3 cols) --><div class="mt-16 grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                    <!-- Service 1: Assessment --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200 flex flex-col">
+                        <h3 class="text-xl font-semibold text-teal-800">1. Age-Specific Assessments (0-5 Yrs)</h3>
                         <p class="mt-4 text-gray-700">
-                            This is our "test" - a thorough, play-based evaluation. Our specialists assess your child's motor skills, speech, cognition, and social-emotional development to build a complete profile of their unique strengths and challenges.
+                            We use industry-standard developmental screening tools and assessments like the Vineland Social Maturity Scale to evaluate children from birth to 5 years. This helps us create a detailed baseline of social, cognitive, and motor skills.
                         </p>
+                        <div class="mt-auto pt-6"> <!-- Pushes link to the bottom -->
+                            <a href="./assessment.html" target="_blank" rel="noopener noreferrer" class="font-bold text-teal-600 hover:text-teal-700 hover:underline transition-colors">
+                                CLICK HERE &rarr;
+                            </a>
+                        </div>
                     </div>
-                    <!-- Service 2: Therapy Plan --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200">
-                        <h3 class="text-xl font-semibold text-teal-800">2. Individualized Intervention Plan</h3>
+                    <!-- Service 2: Developmental Games --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200 flex flex-col">
+                        <h3 class="text-xl font-semibold text-teal-800">2. Play-Based Developmental Games</h3>
                         <p class="mt-4 text-gray-700">
-                            Based on the assessment, we create a customized therapy plan. This plan integrates evidence-based strategies from:
+                            Our therapy is built around fun, engaging games designed to target key developmental areas for children 0-5:
                         </p>
-                        <ul class="mt-4 space-y-2 list-disc list-inside text-gray-700">
-                            <li>Speech & Language Therapy</li>
-                            <li>Occupational Therapy (OT)</li>
-                            <li>Physical Therapy (PT)</li>
-                            <li>Early Intervention Education</li>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-gray-700 flex-grow">
+                            <li>Speech & Language Games</li>
+                            <li>Cognitive Development Activities</li>
+                            <li>Sensory Integration Games</li>
+                            <li>Social & Emotional Skill Building</li>
                         </ul>
+                        <div class="mt-auto pt-6"> <!-- Pushes link to the bottom -->
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="font-bold text-teal-600 hover:text-teal-700 hover:underline transition-colors">
+                                CLICK HERE &rarr;
+                            </a>
+                        </div>
                     </div>
-                    <!-- Service 3: Parent Coaching --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200">
-                        <h3 class="text-xl font-semibold text-teal-800">3. Parent & Caregiver Coaching</h3>
+                    <!-- Service 3: Consultation --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200 flex flex-col">
+                        <h3 class="text-xl font-semibold text-teal-800">3. GDD-Specific Consultation</h3>
                         <p class="mt-4 text-gray-700">
-                            You are your child's most important partner. We empower you with the tools, strategies, and confidence to support your child's development in your everyday family life.
+                            Based on assessment results, we provide clear consultation and create a support plan tailored to your child's specific needs, whether they are experiencing:
                         </p>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-gray-700 flex-grow">
+                            <li>Mild Global Developmental Delay</li>
+                            <li>Moderate Global Developmental Delay</li>
+                            <li>Extreme Global Developmental Delay</li>
+                        </ul>
+                        <div class="mt-auto pt-6"> <!-- Pushes link to the bottom -->
+                            <a href="#contact" class="font-bold text-teal-600 hover:text-teal-700 hover:underline transition-colors">
+                                CLICK HERE &rarr;
+                            </a>
+                        </div>
                     </div>
-                    <!-- Add more services as needed --></div>
+                </div>
             </div>
         </section>
 
@@ -382,80 +243,6 @@
                             </div>
                         </li>
                     </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- 5. Our Process (Integrated Flowchart) --><section id="process" class="py-16 sm:py-24 bg-gray-100">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-5xl">
-                <span class="text-teal-600 font-semibold tracking-wide uppercase">Our Journey Together</span>
-                <h2 class="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl">
-                    Our Step-by-Step Support Process
-                </h2>
-                <p class="mt-4 text-lg text-gray-600 mb-12">
-                    From initial assessment to ongoing progress tracking, we guide families through every stage of their child's developmental journey.
-                </p>
-
-                <div class="flowchart-container">
-                    <!-- Level 1: Initial Assessment --><div class="flowchart-node light-blue connect-down flowchart-branch-start">Initial Developmental Assessment</div>
-
-                    <!-- Level 2: Branching Results --><div class="flowchart-branch">
-                        <div class="flowchart-branch-horizontal"></div>
-
-                        <div class="flowchart-branch-item">
-                            <div class="flowchart-node gray relative connect-down">
-                                Negative Result
-                                <div class="connect-curve-tl"></div>
-                                <div class="connect-v-line-left"></div>
-                            </div>
-                        </div>
-
-                        <div class="flowchart-branch-item">
-                            <div class="flowchart-node teal connect-down">
-                                GDD Identified
-                            </div>
-                        </div>
-
-                        <div class="flowchart-branch-item">
-                            <div class="flowchart-node teal connect-down">
-                                Extreme GDD Identified
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Level 3: Doctor Consultancy / Clinic --><div class="flowchart-branch mt-0">
-                        <div class="flowchart-branch-item">
-                            <div class="flowchart-node gray w-0 h-0 p-0 m-0 invisible"></div> <!-- Spacer --></div>
-                        <div class="flowchart-branch-item">
-                            <div class="flowchart-node blue connect-down">Doctor Consultation</div>
-                        </div>
-                        <div class="flowchart-branch-item">
-                            <div class="flowchart-node blue connect-down relative">
-                                Clinic Visit
-                                <div class="horizontal-line w-16 left-[-6rem] top-1/2 -translate-y-1/2"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Merged: Therapy --><div class="flowchart-node teal connect-down flowchart-merge-point">Personalized Therapy</div>
-
-                    <!-- Level 4: Progress Tracking & Other Services --><div class="flowchart-branch">
-                        <div class="flowchart-branch-item">
-                            <div class="flowchart-node blue connect-down relative">
-                                Progress Tracking
-                                <div class="horizontal-line w-20 right-[-6rem] top-1/2 -translate-y-1/2"></div>
-                            </div>
-                        </div>
-                        <div class="flowchart-branch-item">
-                            <div class="flowchart-node gray w-0 h-0 p-0 m-0 invisible"></div> <!-- Spacer --></div>
-                        <div class="flowchart-branch-item">
-                            <div class="flowchart-node blue connect-down">24x7 Help Service</div>
-                        </div>
-                    </div>
-
-                    <!-- Level 5: Virtual Webinar --><div class="flowchart-node blue connect-down flowchart-merge-point">Virtual Webinar</div>
-
-                    <!-- Level 6: End --><div class="flowchart-node gray">Journey Ends / Continued Support</div>
                 </div>
             </div>
         </section>
@@ -520,7 +307,7 @@
                 </a>
                 <p class="mt-6 text-gray-600">
                     Or call us at <a href="tel:123-456-7890" class="font-semibold text-teal-700 hover:underline">123-456-7890</a>
-                </p>
+                </D>
             </div>
         </section>
     </main>
@@ -542,7 +329,6 @@
                         <li><a href="#gdd" class="hover:text-white">About GDD</a></li>
                         <li><a href="#services" class="hover:text-white">Our Services</a></li>
                         <li><a href="#approach" class="hover:text-white">Our Approach</a></li>
-                        <li><a href="#process" class="hover:text-white">Our Process</a></li>
                         <li><a href="#team" class="hover:text-white">Our Team</a></li>
                         <li><a href="#contact" class="hover:text-white">Contact Us</a></li>
                         <li><a href="#" class="hover:text-white">FAQ</a></li>
@@ -582,41 +368,124 @@
     </script>
     
     <!-- React script to render Lucide icons --><script type="text/babel">
-      window.onload = function() {
-        const { createRoot } = ReactDOM;
-        const { createElement: e } = React;
-        // Fix: Access lucideReact from the global 'window' object
-        const { Smile, Brain, MessageSquare, Footprints } = window.lucideReact;
+     window.onload = function() {
 
-        const icons = [
-            { icon: MessageSquare, label: "Speech & Language" },
-            { icon: Footprints, label: "Motor Skills (Fine & Gross)" },
-            { icon: Brain, label: "Cognitive Skills" },
-            { icon: Smile, label: "Social & Emotional Skills" },
-        ];
+       // --- SLIDESHOW LOGIC START ---
+       const slides = document.querySelectorAll('#slideshow-container .slide');
+       const dots = document.querySelectorAll('#slide-dots .slide-dot');
+       const prevBtn = document.getElementById('prev-slide');
+       const nextBtn = document.getElementById('next-slide');
+       
+       let currentSlide = 0;
+       let slideInterval;
 
-        function IconCard({ icon, label }) {
-            return e('div', { className: "flex flex-col items-center" },
-                e('div', { className: "icon-wrapper" },
-                    e(icon, { size: 32, strokeWidth: 2 })
-                ),
-                e('h4', { className: "mt-4 text-lg font-medium text-gray-800" }, label)
-            );
-        }
+       function showSlide(n) {
+           let slideIndex = n;
+           if (n >= slides.length) { slideIndex = 0; }
+           if (n < 0) { slideIndex = slides.length - 1; }
+           currentSlide = slideIndex;
+           
+           slides.forEach((slide, index) => {
+               slide.classList.toggle('hidden', index !== currentSlide);
+           });
+           
+           dots.forEach((dot, index) => {
+               dot.classList.toggle('opacity-100', index === currentSlide);
+               dot.classList.toggle('opacity-50', index !== currentSlide);
+           });
+       }
 
-        const App = () => {
-            return e(React.Fragment, null,
-                icons.map((item, index) => e(IconCard, { key: index, icon: item.icon, label: item.label }))
-            );
-        };
+       function nextSlide() {
+           showSlide(currentSlide + 1);
+       }
 
-        const domContainer = document.querySelector('#icon-container');
-        const root = createRoot(domContainer);
-        root.render(e(App));
-      }
+       function prevSlide() {
+           showSlide(currentSlide - 1);
+       }
+
+       function startSlideShow() {
+           // Clear existing interval to prevent speeding up
+           clearInterval(slideInterval);
+           slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+       }
+
+       function stopSlideShow() {
+           clearInterval(slideInterval);
+       }
+
+       // Event Listeners for buttons
+       if (nextBtn && prevBtn) {
+            nextBtn.addEventListener('click', () => {
+                nextSlide();
+                stopSlideShow(); // Stop auto-play on manual navigation
+                startSlideShow(); // Restart timer
+            });
+
+            prevBtn.addEventListener('click', () => {
+                prevSlide();
+                stopSlideShow();
+                startSlideShow();
+            });
+       }
+
+       // Event listeners for dots
+       dots.forEach((dot, index) => {
+           dot.addEventListener('click', () => {
+               showSlide(index);
+               stopSlideShow();
+               startSlideShow();
+           });
+       });
+       
+       // Optional: Pause on hover
+       const container = document.getElementById('slideshow-container');
+       if (container) {
+           container.addEventListener('mouseenter', stopSlideShow);
+           container.addEventListener('mouseleave', startSlideShow);
+       }
+
+       // Initial setup
+       if (slides.length > 0) {
+           showSlide(currentSlide);
+           startSlideShow();
+       }
+       // --- SLIDESHOW LOGIC END ---
+
+       // --- ORIGINAL REACT LOGIC ---
+       const { createRoot } = ReactDOM;
+       const { createElement: e } = React;
+       // Access icons from the global 'lucide' object (not 'lucideReact')
+       const { Smile, Brain, MessageSquare, Footprints } = lucide;
+
+       const icons = [
+           { icon: MessageSquare, label: "Speech & Language" },
+           { icon: Footprints, label: "Motor Skills (Fine & Gross)" },
+           { icon: Brain, label: "Cognitive Skills" },
+           { icon: Smile, label: "Social & Emotional Skills" },
+       ];
+
+       function IconCard({ icon, label }) {
+           return e('div', { className: "flex flex-col items-center" },
+               e('div', { className: "icon-wrapper" },
+                   e(icon, { size: 32, strokeWidth: 2 })
+               ),
+               e('h4', { className: "mt-4 text-lg font-medium text-gray-800" }, label)
+           );
+       }
+
+       const App = () => {
+           return e(React.Fragment, null,
+               icons.map((item, index) => e(IconCard, { key: index, icon: item.icon, label: item.label }))
+           );
+       };
+
+       const domContainer = document.querySelector('#icon-container');
+       // Add check in case element doesn't exist
+       if (domContainer) {
+           const root = createRoot(domContainer);
+           root.render(e(App));
+       }
+     }
     </script>
 </body>
 </html>
-
-
-
