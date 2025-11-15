@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KindliPath | Global Developmental Delay Support</title>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons (Lucide) --><script src="https://unpkg.com/lucide-react@latest/dist/lucide-react.js"></script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Simple icon component styling */
+        .icon-wrapper {
+            background-color: #e0f2f1; /* Light teal */
+            color: #00796b; /* Dark teal */
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header & Navigation --><header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <!-- Logo --><a href="#" class="text-2xl font-bold text-teal-700">
+                KindliPath
+            </a>
+
+            <!-- Desktop Nav --><div class="hidden md:flex space-x-6 items-center">
+                <a href="#gdd" class="text-gray-600 hover:text-teal-600 transition-colors">About GDD</a>
+                <a href="#services" class="text-gray-600 hover:text-teal-600 transition-colors">Our Services</a>
+                <a href="#approach" class="text-gray-600 hover:text-teal-600 transition-colors">Our Approach</a>
+                <a href="#team" class="text-gray-600 hover:text-teal-600 transition-colors">Our Team</a>
+                <a href="consultation.html" class="bg-teal-600 text-white px-4 py-2 rounded-full font-medium hover:bg-teal-700 transition-colors shadow-sm">
+                    Book Consultation
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button --><button id="menu-btn" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </nav>
+
+        <!-- Mobile Menu (Hidden by default) --><div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg border-t">
+            <a href="#gdd" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">About GDD</a>
+            <a href="#services" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Services</a>
+            <a href="#approach" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Approach</a>
+            <a href="#team" class="block px-4 py-3 text-gray-700 hover:bg-gray-100">Our Team</a>
+            <a href="#contact" class="block px-4 py-3 m-2 bg-teal-600 text-white text-center rounded-full font-medium hover:bg-teal-700">
+                Book Consultation
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content --><main>
+        <!-- 1. Hero Section --><section class="bg-white py-16 sm:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+                <!-- Hero Text --><div class="text-center md:text-left">
+                    <span class="text-teal-600 font-semibold tracking-wide uppercase">Support for Every Step</span>
+                    <h1 class="mt-2 text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+                        Supporting Your Child's Unique Developmental Journey
+                    </h1>
+                    <p class="mt-6 text-lg text-gray-600">
+                        We provide compassionate, expert-led assessment, therapy, and support services for children with Global Developmental Delay. Let's unlock your child's full potential together.
+                    </p>
+                    <div class="mt-8 flex justify-center md:justify-start">
+                        <a href="#services" class="inline-block w-full sm:w-auto text-center px-8 py-3 bg-teal-600 text-white font-medium rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
+                            Explore Our Services
+                        </a>
+                    </div>
+                </div>
+                <!-- Hero Image Slideshow -->
+                <div class="mt-10 md:mt-0">
+                    <div id="slideshow-container" class="relative rounded-lg shadow-xl aspect-[5/4] w-full overflow-hidden">
+                        <!-- Slide 1 -->
+                        <div class="slide absolute top-0 left-0 w-full h-full">
+                            <img src="pictures/child1.jpeg" 
+                                 alt="Therapist and child playing with colorful blocks" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        <!-- Slide 2 -->
+                        <div class="slide absolute top-0 left-0 w-full h-full hidden">
+                            <img src="pictures/child4.jpeg" 
+                                 alt="Child in a sensory integration room" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        <!-- Slide 3 -->
+                        <div class="slide absolute top-0 left-0 w-full h-full hidden">
+                            <img src="pictures/child3.jpeg" 
+                                 alt="Speech therapist working with a child" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        <!-- Slide 4 -->
+                        <div class="slide absolute top-0 left-0 w-full h-full hidden">
+                            <img src="pictures/child2.jpeg" 
+                                 alt="Child's hands stacking colorful rings" 
+                                 class="w-full h-full object-cover">
+                        </div>
+            
+                        <!-- Navigation Buttons -->
+                        <button id="prev-slide" class="absolute top-1/2 left-3 transform -translate-y-1/2 bg-white/50 hover:bg-white rounded-full p-2 focus:outline-none transition z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-800"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <button id="next-slide" class="absolute top-1/2 right-3 transform -translate-y-1/2 bg-white/50 hover:bg-white rounded-full p-2 focus:outline-none transition z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-800"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+            
+                        <!-- Dot Indicators -->
+                        <div id="slide-dots" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+                            <button class="slide-dot w-3 h-3 bg-white rounded-full opacity-50 transition"></button>
+                            <button class="slide-dot w-3 h-3 bg-white rounded-full opacity-50 transition"></button>
+                            <button class="slide-dot w-3 h-3 bg-white rounded-full opacity-50 transition"></button>
+                            <button class="slide-dot w-3 h-3 bg-white rounded-full opacity-50 transition"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. What is GDD? --><section id="gdd" class="py-16 sm:py-24 bg-teal-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center">
+                <h2 class="text-3xl font-bold text-gray-900">
+                    Understanding Global Developmental Delay (GDD)
+                </h2>
+                <p class="mt-4 text-lg text-gray-700">
+                    Global Developmental Delay (GDD) is a term used when a child shows significant delays in two or more main areas of development. These areas, often called "milestones," include:
+                </p>
+                <!-- Icons for Developmental Areas --><div id="icon-container" class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <!-- Icons will be rendered here by React --></div>
+                <p class="mt-12 text-lg text-gray-700">
+                    An early and accurate assessment is the first step toward getting your child the right support. We are here to guide you through that process with empathy and expertise.
+                </p>
+            </div>
+        </section>
+
+        <!-- 3. Our Services (The "Tests" and "Services") --><section id="services" class="py-16 sm:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-teal-600 font-semibold tracking-wide uppercase">Our Services</span>
+                    <h2 class="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl">
+                        A Path to Progress for Your Child
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600">
+                        We offer a comprehensive suite of services, from initial assessment to ongoing therapy, all tailored to your child's individual needs.
+                    </p>
+                </div>
+
+                <!-- Services Grid (Updated to 3 cols) --><div class="mt-16 grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                    <!-- Service 1: Assessment --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200 flex flex-col">
+                        <h3 class="text-xl font-semibold text-teal-800">1. Age-Specific Assessments (0-5 Yrs)</h3>
+                        <p class="mt-4 text-gray-700">
+                            We use industry-standard developmental screening tools and assessments like the Vineland Social Maturity Scale to evaluate children from birth to 5 years. This helps us create a detailed baseline of social, cognitive, and motor skills.
+                        </p>
+                        <div class="mt-auto pt-6"> <!-- Pushes link to the bottom -->
+                            <a href="./assessment.html#services" class="font-bold text-teal-600 hover:text-teal-700 hover:underline transition-colors">
+                                CLICK HERE &rarr;
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Service 2: Developmental Games --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200 flex flex-col">
+                        <h3 class="text-xl font-semibold text-teal-800">2. Play-Based Developmental Games</h3>
+                        <p class="mt-4 text-gray-700">
+                            Our therapy is built around fun, engaging games designed to target key developmental areas for children 0-5:
+                        </p>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-gray-700 flex-grow">
+                            <li>Speech & Language Games</li>
+                            <li>Cognitive Development Activities</li>
+                            <li>Sensory Integration Games</li>
+                            <li>Social & Emotional Skill Building</li>
+                        </ul>
+                        <div class="mt-auto pt-6"> <!-- Pushes link to the bottom -->
+                            <a href="./games.html#services" class="font-bold text-teal-600 hover:text-teal-700 hover:underline transition-colors">
+                                CLICK HERE &rarr;
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Service 3: Consultation --><div class="bg-gray-50 p-8 rounded-lg shadow-md border border-gray-200 flex flex-col">
+                        <h3 class="text-xl font-semibold text-teal-800">3. GDD-Specific Consultation</h3>
+                        <p class="mt-4 text-gray-700">
+                            Based on assessment results, we provide clear consultation and create a support plan tailored to your child's specific needs, whether they are experiencing:
+                        </p>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-gray-700 flex-grow">
+                            <li>Mild Global Developmental Delay</li>
+                            <li>Moderate Global Developmental Delay</li>
+                            <li>Extreme Global Developmental Delay</li>
+                        </ul>
+                        <div class="mt-auto pt-6"> <!-- Pushes link to the bottom -->
+                            <a href="#contact" class="font-bold text-teal-600 hover:text-teal-700 hover:underline transition-colors">
+                                CLICK HERE &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Our Approach --><section id="approach" class="py-16 sm:py-24 bg-teal-700 text-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <img src="pictures/child5.jpeg" 
+                         alt="Diverse team of therapists collaborating" 
+                         class="rounded-lg shadow-xl aspect-[5/4] w-full object-cover">
+                </div>
+                <div class="order-1 md:order-2">
+                    <h2 class="text-3xl font-bold sm:text-4xl">
+                        Our Compassionate, Evidence-Based Approach
+                    </h2>
+                    <p class="mt-4 text-lg text-teal-50">
+                        We believe progress happens when expertise meets empathy. Our philosophy is built on three core pillars:
+                    </p>
+                    <ul class="mt-8 space-y-6">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-8 h-8 bg-white text-teal-700 rounded-full flex items-center justify-center font-bold">1</span>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-semibold">Child-Centered & Play-Based</h4>
+                                <p class="text-teal-100">Learning happens best through play. Our sessions are fun, engaging, and tailored to your child's interests to foster a love of learning.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-8 h-8 bg-white text-teal-700 rounded-full flex items-center justify-center font-bold">2</span>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-semibold">Family-Focused Partnership</h4>
+                                <p class="text-teal-100">We work *with* you, not just *for* you. You are a key member of the therapy team, and we value your insights and goals.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 w-8 h-8 bg-white text-teal-700 rounded-full flex items-center justify-center font-bold">3</span>
+                            <div class="ml-4">
+                                <h4 class="text-xl font-semibold">Collaborative, Expert Care</h4>
+                                <p class="text-teal-100">Our team of specialists collaborates to ensure a holistic approach, coordinating with pediatricians, schools, and other providers.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 6. Our Team --><section id="team" class="py-16 sm:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">
+                        Meet Our Team of Specialists
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600">
+                        We are a dedicated, multidisciplinary team of licensed professionals committed to child development.
+                    </p>
+                </div>
+                <!-- Team Grid --><div class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Team Member 1 --><div class="text-center">
+                        <img class="w-40 h-40 rounded-full mx-auto shadow-lg object-cover" src="https://placehold.co/160x160/E0F2F1/00796B?text=Dr.+Jane+D." alt="Dr. Jane Doe">
+                        <h4 class="mt-6 text-xl font-semibold text-gray-900">Dr. Jane Doe, PhD, BCBA</h4>
+                        <p class="text-teal-600">Clinical Director & Psychologist</p>
+                        <p class="mt-2 text-gray-600">With 15 years of experience, Dr. Doe specializes in developmental assessments and behavioral support.</p>
+                    </div>
+                    <!-- Team Member 2 --><div class="text-center">
+                        <img class="w-40 h-40 rounded-full mx-auto shadow-lg object-cover" src="https://placehold.co/160x160/E0F2F1/00796B?text=Mark+S." alt="Mark Smith">
+                        <h4 class="mt-6 text-xl font-semibold text-gray-900">Mark Smith, M.S., CCC-SLP</h4>
+                        <p class="text-teal-600">Lead Speech-Language Pathologist</p>
+                        <p class="mt-2 text-gray-600">Mark is passionate about helping children find their voice, from first words to complex conversations.</p>
+                    </div>
+                    <!-- Team Member 3 --><div class="text-center">
+                        <img class="w-40 h-40 rounded-full mx-auto shadow-lg object-cover" src="https://placehold.co/160x160/E0F2F1/00796B?text=Emily+C." alt="Emily Chen">
+                        <h4 class="mt-6 text-xl font-semibold text-gray-900">Emily Chen, OTR/L</h4>
+                        <p class="text-teal-600">Lead Occupational Therapist</p>
+                        <p class="mt-2 text-gray-600">Emily uses play-based activities to help children build fine motor, sensory, and self-care skills.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Testimonial --><section class="bg-teal-50 py-16">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-teal-600 opacity-50"><path d="M3 21h18M7 21v-4a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v4M6 10c0-1.886.667-3.6 1.857-4.857C8.943 4.029 10.4 3.5 12 3.5c1.6 0 3.057.529 4.143 1.643C17.333 6.4 18 8.114 18 10c0 4-3 6-6 6s-6-2-6-6z"></path></svg>
+                <blockquote class="mt-4">
+                    <p class="text-2xl font-medium text-gray-900">
+                        "The team at Bright Futures gave us the tools and, most importantly, the hope we needed. Seeing our son's progress in just a few months has been incredible. We finally feel like we have a true partner."
+                    </p>
+                    <footer class="mt-6">
+                        <p class="text-base font-medium text-gray-800">Sarah K., Parent</p>
+                    </footer>
+                </blockquote>
+            </div>
+        </section>
+
+        <!-- 8. Contact / CTA --><section id="contact" class="py-16 sm:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl text-center">
+                <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">
+                    Ready to Take the Next Step?
+                </h2>
+                <p class="mt-4 text-lg text-gray-600">
+                    Your journey starts with a simple conversation. Schedule a free, no-obligation 15-minute consultation with our care coordinator to discuss your concerns and learn how we can help.
+                </p>
+                <a href="consultation.html" class="mt-8 inline-block px-10 py-4 bg-teal-600 text-white font-medium text-lg rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
+                    Book Your Free Consultation
+                </a>
+                <p class="mt-6 text-gray-600">
+                    Or call us at <a href="tel:123-456-7890" class="font-semibold text-teal-700 hover:underline">123-456-7890</a>
+                </D>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer --><footer class="bg-gray-800 text-gray-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- About --><div>
+                    <h4 class="text-xl font-bold text-white">KindliPath</h4>
+                    <p class="mt-4 text-gray-400">
+                        Compassionate support for children with Global Developmental Delay and their families.
+                    </p>
+                    <p class="mt-2 text-gray-400">123 Main Street, Manipur, INDIA</p>
+                    <p class="mt-1 text-gray-400">contact@brightfutures.dev</p>
+                </div>
+                <!-- Quick Links --><div>
+                    <h5 class="text-lg font-semibold text-white tracking-wide">Quick Links</h5>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#gdd" class="hover:text-white">About GDD</a></li>
+                        <li><a href="#services" class="hover:text-white">Our Services</a></li>
+                        <li><a href="#approach" class="hover:text-white">Our Approach</a></li>
+                        <li><a href="#team" class="hover:text-white">Our Team</a></li>
+                        <li><a href="#contact" class="hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                <!-- Newsletter (Optional) --><div>
+                    <h5 class="text-lg font-semibold text-white tracking-wide">Stay Updated</h5>
+                    <p class="mt-4 text-gray-400">Get helpful resources and news delivered to your inbox.</p>
+                    <form class="mt-4 flex">
+                        <input type="email" placeholder="Your email" class="w-full px-4 py-2 rounded-l-md text-gray-900 focus:outline-none" aria-label="Email for newsletter">
+                        <button class="bg-teal-600 text-white px-4 py-2 rounded-r-md hover:bg-teal-700">
+                            Sub
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-10 pt-8 border-t border-gray-700 text-center text-gray-500">
+                <p>&copy; 2025 KindliPath. All rights reserved. | <a href="#" class="hover:text-white">Privacy Policy</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu --><script>
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close menu when a link is clicked
+        mobileMenu.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+    </script>
+    
+    <!-- React script to render Lucide icons --><script type="text/babel">
+     window.onload = function() {
+
+       // --- SLIDESHOW LOGIC START ---
+       const slides = document.querySelectorAll('#slideshow-container .slide');
+       const dots = document.querySelectorAll('#slide-dots .slide-dot');
+       const prevBtn = document.getElementById('prev-slide');
+       const nextBtn = document.getElementById('next-slide');
+       
+       let currentSlide = 0;
+       let slideInterval;
+
+       function showSlide(n) {
+           let slideIndex = n;
+           if (n >= slides.length) { slideIndex = 0; }
+           if (n < 0) { slideIndex = slides.length - 1; }
+           currentSlide = slideIndex;
+           
+           slides.forEach((slide, index) => {
+               slide.classList.toggle('hidden', index !== currentSlide);
+           });
+           
+           dots.forEach((dot, index) => {
+               dot.classList.toggle('opacity-100', index === currentSlide);
+               dot.classList.toggle('opacity-50', index !== currentSlide);
+           });
+       }
+
+       function nextSlide() {
+           showSlide(currentSlide + 1);
+       }
+
+       function prevSlide() {
+           showSlide(currentSlide - 1);
+       }
+
+       function startSlideShow() {
+           // Clear existing interval to prevent speeding up
+           clearInterval(slideInterval);
+           slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+       }
+
+       function stopSlideShow() {
+           clearInterval(slideInterval);
+       }
+
+       // Event Listeners for buttons
+       if (nextBtn && prevBtn) {
+            nextBtn.addEventListener('click', () => {
+                nextSlide();
+                stopSlideShow(); // Stop auto-play on manual navigation
+                startSlideShow(); // Restart timer
+            });
+
+            prevBtn.addEventListener('click', () => {
+                prevSlide();
+                stopSlideShow();
+                startSlideShow();
+            });
+       }
+
+       // Event listeners for dots
+       dots.forEach((dot, index) => {
+           dot.addEventListener('click', () => {
+               showSlide(index);
+               stopSlideShow();
+               startSlideShow();
+           });
+       });
+       
+       // Optional: Pause on hover
+       const container = document.getElementById('slideshow-container');
+       if (container) {
+           container.addEventListener('mouseenter', stopSlideShow);
+           container.addEventListener('mouseleave', startSlideShow);
+       }
+
+       // Initial setup
+       if (slides.length > 0) {
+           showSlide(currentSlide);
+           startSlideShow();
+       }
+       // --- SLIDESHOW LOGIC END ---
+
+       // --- ORIGINAL REACT LOGIC ---
+       const { createRoot } = ReactDOM;
+       const { createElement: e } = React;
+       // Access icons from the global 'lucide' object (not 'lucideReact')
+       const { Smile, Brain, MessageSquare, Footprints } = lucide;
+
+       const icons = [
+           { icon: MessageSquare, label: "Speech & Language" },
+           { icon: Footprints, label: "Motor Skills (Fine & Gross)" },
+           { icon: Brain, label: "Cognitive Skills" },
+           { icon: Smile, label: "Social & Emotional Skills" },
+       ];
+
+       function IconCard({ icon, label }) {
+           return e('div', { className: "flex flex-col items-center" },
+               e('div', { className: "icon-wrapper" },
+                   e(icon, { size: 32, strokeWidth: 2 })
+               ),
+               e('h4', { className: "mt-4 text-lg font-medium text-gray-800" }, label)
+           );
+       }
+
+       const App = () => {
+           return e(React.Fragment, null,
+               icons.map((item, index) => e(IconCard, { key: index, icon: item.icon, label: item.label }))
+           );
+       };
+
+       const domContainer = document.querySelector('#icon-container');
+       // Add check in case element doesn't exist
+       if (domContainer) {
+           const root = createRoot(domContainer);
+           root.render(e(App));
+       }
+     }
+    </script>
+</body>
+</html>

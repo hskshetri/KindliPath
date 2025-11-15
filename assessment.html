@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KindliPath | GDD Assessment (0-5 Years)</title>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for the radio buttons */
+        .rating-label {
+            display: block;
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            border-radius: 9999px; /* pill shape */
+            border: 2px solid #e2e8f0; /* gray-300 */
+            background-color: #ffffff;
+            color: #4a5568; /* gray-700 */
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            text-align: center;
+        }
+        .rating-label:hover {
+            border-color: #a0aec0; /* gray-400 */
+        }
+        
+        /* Hide the actual radio button */
+        .rating-input {
+            display: none;
+        }
+        
+        /* Style for the label when the radio is checked */
+        .rating-input:checked + .rating-label {
+            border-color: #00796b; /* teal-700 */
+            background-color: #e0f2f1; /* teal-50 */
+            color: #004d40; /* teal-900 */
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Error state for unanswered questions */
+        .question-card.error {
+            border: 2px solid #f44336; /* red-500 */
+            background-color: #ffebee; /* red-50 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="./index.html#services" class="text-xl sm:text-2xl font-bold text-teal-700">
+                &larr; Back to KindliPath
+            </a>
+            <!-- No other buttons as requested -->
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-16 sm:py-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Step 1: Age Selection -->
+            <div id="age-selection" class="max-w-3xl mx-auto bg-white p-8 sm:p-12 rounded-lg shadow-lg">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center tracking-tight">
+                    Developmental Assessment
+                </h1>
+                <p class="mt-6 text-lg text-gray-600 text-center">
+                    This is a simple tool based on developmental milestones. It is for informational purposes only and is **not a medical diagnosis.** Please select your child's age group to begin.
+                </p>
+                <div class="mt-8">
+                    <label for="age-group" class="block text-sm font-medium text-gray-700">Select Age Group:</label>
+                    <select id="age-group" name="age-group" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md shadow-sm">
+                        <option value="">-- Please select --</option>
+                        <option value="0-1">0 - 1 Year Old</option>
+                        <option value="1-2">1 - 2 Years Old</option>
+                        <option value="2-3">2 - 3 Years Old</option>
+                        <option value="3-4">3 - 4 Years Old</option>
+                        <option value="4-5">4 - 5 Years Old</option>
+                    </select>
+                </div>
+                <button id="start-btn" class="mt-8 w-full bg-teal-600 text-white py-3 px-6 rounded-full font-bold text-lg shadow-lg hover:bg-teal-700 transition-transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Start Assessment
+                </button>
+            </div>
+
+            <!-- Step 2: Questionnaire -->
+            <div id="questionnaire" class="hidden max-w-3xl mx-auto">
+                <h2 id="question-title" class="text-3xl font-bold text-gray-900 text-center mb-8"></h2>
+                <div id="question-container" class="space-y-6">
+                    <!-- Questions will be injected here -->
+                </div>
+                <div id="error-message" class="hidden mt-6 text-center text-red-600 font-semibold">
+                    Please answer all questions before getting results.
+                </div>
+                <button id="results-btn" class="mt-10 w-full bg-teal-600 text-white py-3 px-6 rounded-full font-bold text-lg shadow-lg hover:bg-teal-700 transition-transform hover:scale-105">
+                    Get My Results
+                </button>
+                <button id="back-btn" class="mt-4 w-full bg-gray-200 text-gray-800 py-3 px-6 rounded-full font-bold text-lg hover:bg-gray-300 transition-colors">
+                    Back to Age Selection
+                </button>
+            </div>
+
+            <!-- Step 3: Results -->
+            <div id="results" class="hidden max-w-3xl mx-auto bg-white p-8 sm:p-12 rounded-lg shadow-lg text-center">
+                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Your Informational Results</h2>
+                <p class="mt-4 text-lg text-gray-600">Based on your responses, here is a general categorization for informational purposes.</p>
+                <div id="result-badge" class="mt-8 inline-block px-8 py-3 rounded-full text-2xl font-bold text-white shadow-lg">
+                    <!-- Result text here -->
+                </div>
+                <div id="result-description" class="mt-6 text-left text-gray-700 space-y-4">
+                    <!-- Description text here -->
+                </div>
+                <div class="mt-10 p-6 bg-teal-50 border border-teal-200 rounded-lg">
+                    <h4 class="text-xl font-bold text-teal-800">What's Next?</h4>
+                    <p class="mt-2 text-teal-700">This tool is not a diagnosis. We strongly recommend booking a consultation with our specialists to discuss these findings and create a formal support plan.</p>
+                    <a href="gdd-website.html#contact" class="mt-6 inline-block px-8 py-3 bg-teal-600 text-white font-medium rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
+                        Book a Free Consultation
+                    </a>
+                </div>
+                <button id="restart-btn" class="mt-8 w-full bg-gray-200 text-gray-800 py-3 px-6 rounded-full font-bold text-lg hover:bg-gray-300 transition-colors">
+                    Start New Assessment
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+            <p>&copy; 2025 KindliPath. All rights reserved. | <a href="gdd-website.html" class="hover:text-white">Back to Main Site</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const questions = {
+            "0-1": [
+                { id: "q1", area: "Motor", text: "Does your baby lift their head while on their tummy?" },
+                { id: "q2", area: "Social", text: "Does your baby smile back at you when you smile?" },
+                { id: "q3", area: "Language", text: "Does your baby make cooing or gurgling sounds?" },
+                { id: "q4", area: "Motor", text: "Does your baby reach for or grasp objects?" },
+                { id: "q5", area: "Social", text: "Does your baby respond to their name?" },
+                { id: "q6", area: "Cognitive", text: "Does your baby show curiosity about things around them?" }
+            ],
+            "1-2": [
+                { id: "q1", area: "Motor", text: "Is your child standing on their own or taking steps?" },
+                { id: "q2", area: "Language", text: "Does your child say 'Mama' or 'Dada' and at least one or two other words?" },
+                { id: "q3", area: "Social", text: "Does your child play simple games like 'peek-a-boo'?" },
+                { id: "q4", area: "Cognitive", text: "Does your child point to objects they want?" },
+                { id: "q5", area: "Motor", text: "Can your child pick up small items (like cereal) with their thumb and finger?" },
+                { id: "q6", area: "Language", text: "Does your child follow simple one-step commands (e.g., 'Give me the toy')?" }
+            ],
+            "2-3": [
+                { id: "q1", area: "Language", text: "Can your child speak in two-word phrases (e.g., 'More milk')?" },
+                { id: "q2", area: "Motor", text: "Can your child run and jump with both feet?" },
+                { id: "q3", area: "Cognitive", text: "Does your child begin to sort shapes and colors?" },
+                { id: "q4", area:"Social", text: "Does your child show interest in playing alongside other children?" },
+                { id: "q5", area: "Motor", text: "Can your child build a tower of 4 or more blocks?" },
+                { id: "q6", area: "Cognitive", text: "Does your child imitate your actions or words?" }
+            ],
+            "3-4": [
+                { id: "q1", area: "Language", text: "Can your child speak in 3-4 word sentences?" },
+                { id: "q2", area: "Motor", text: "Can your child ride a tricycle (using pedals)?" },
+                { id: "q3", area: "Social", text: "Does your child show a wide range of emotions and talk about their feelings?" },
+                { id: "q4", area: "Cognitive", text: "Does your child understand concepts like 'one' and 'all'?" },
+                { id: "q5", area: "Motor", text: "Can your child use child-safe scissors?" },
+                { id: "q6", area: "Social", text: "Does your child engage in pretend play (e.g., 'feeding' a doll)?" }
+            ],
+            "4-5": [
+                { id: "q1", area: "Language", text: "Can your child tell a simple story or talk about their day?" },
+                { id: "q2", area: "Cognitive", text: "Can your child count 5-10 objects?" },
+                { id: "q3", area: "Motor", text: "Can your child hop on one foot for a few seconds?" },
+                { id: "q4", area: "Social", text: "Does your child play cooperatively with other children (taking turns)?" },
+                { id: "q5", area: "Cognitive", text: "Does your child know some basic colors and shapes?" },
+                { id: "q6", area: "Motor", text: "Can your child draw a person with at least 3 body parts?" }
+            ]
+        };
+
+        const ageSelection = document.getElementById('age-selection');
+        const questionnaire = document.getElementById('questionnaire');
+        const results = document.getElementById('results');
+        
+        const ageSelect = document.getElementById('age-group');
+        const startBtn = document.getElementById('start-btn');
+        const backBtn = document.getElementById('back-btn');
+        const resultsBtn = document.getElementById('results-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        
+        const questionContainer = document.getElementById('question-container');
+        const questionTitle = document.getElementById('question-title');
+        const errorMessage = document.getElementById('error-message');
+
+        ageSelect.addEventListener('change', () => {
+            startBtn.disabled = ageSelect.value === "";
+        });
+
+        startBtn.addEventListener('click', () => {
+            const ageGroup = ageSelect.value;
+            if (ageGroup) {
+                loadQuestions(ageGroup);
+                ageSelection.classList.add('hidden');
+                questionnaire.classList.remove('hidden');
+                results.classList.add('hidden');
+            }
+        });
+
+        backBtn.addEventListener('click', () => {
+            ageSelection.classList.remove('hidden');
+            questionnaire.classList.add('hidden');
+            results.classList.add('hidden');
+        });
+
+        restartBtn.addEventListener('click', () => {
+            ageSelection.classList.remove('hidden');
+            questionnaire.classList.add('hidden');
+            results.classList.add('hidden');
+            ageSelect.value = "";
+            startBtn.disabled = true;
+        });
+
+        resultsBtn.addEventListener('click', () => {
+            if (validateAnswers()) {
+                showResults();
+            } else {
+                errorMessage.classList.remove('hidden');
+            }
+        });
+
+        function loadQuestions(ageGroup) {
+            questionContainer.innerHTML = ""; // Clear old questions
+            errorMessage.classList.add('hidden'); // Hide error
+            questionTitle.textContent = `Questions for ${ageGroup} Year Olds`;
+            
+            const ageQuestions = questions[ageGroup];
+            
+            ageQuestions.forEach((q, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card bg-white p-6 rounded-lg shadow';
+                questionCard.id = `card-${q.id}`;
+                
+                questionCard.innerHTML = `
+                    <p class="text-lg font-semibold text-gray-800">${index + 1}. ${q.text}</p>
+                    <p class="text-sm text-gray-500 mb-4">Area: ${q.area}</p>
+                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-4">
+                        ${[1, 2, 3, 4, 5].map(val => `
+                            <div>
+                                <input type="radio" name="${q.id}" id="${q.id}-${val}" value="${val}" class="rating-input">
+                                <label for="${q.id}-${val}" class="rating-label">
+                                    <span class="sm:hidden">${val}</span>
+                                    <span class="hidden sm:inline">${val === 1 ? 'Never' : val === 2 ? 'Rarely' : val === 3 ? 'Sometimes' : val === 4 ? 'Often' : 'Always'}</span>
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                questionContainer.appendChild(questionCard);
+            });
+
+            // Add change listener to remove error styling
+            questionContainer.querySelectorAll('.rating-input').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const card = document.getElementById(`card-${e.target.name}`);
+                    if (card) {
+                        card.classList.remove('error');
+                    }
+                    if (validateAnswers()) {
+                        errorMessage.classList.add('hidden');
+                    }
+                });
+            });
+        }
+
+        function validateAnswers() {
+            const ageGroup = ageSelect.value;
+            const ageQuestions = questions[ageGroup];
+            let allAnswered = true;
+
+            for (const q of ageQuestions) {
+                const answered = document.querySelector(`input[name="${q.id}"]:checked`);
+                const card = document.getElementById(`card-${q.id}`);
+                if (!answered) {
+                    allAnswered = false;
+                    if (card) {
+                        card.classList.add('error');
+                    }
+                } else {
+                    if (card) {
+                        card.classList.remove('error');
+                    }
+                }
+            }
+            return allAnswered;
+        }
+
+        function showResults() {
+            const ageGroup = ageSelect.value;
+            const ageQuestions = questions[ageGroup];
+            let totalScore = 0;
+            
+            ageQuestions.forEach(q => {
+                const val = document.querySelector(`input[name="${q.id}"]:checked`).value;
+                totalScore += parseInt(val, 10);
+            });
+
+            const averageScore = totalScore / ageQuestions.length;
+            
+            const resultBadge = document.getElementById('result-badge');
+            const resultDescription = document.getElementById('result-description');
+            
+            let category, badgeColor, description;
+
+            if (averageScore < 2.5) {
+                category = "Potential for Extreme GDD";
+                badgeColor = "bg-red-600";
+                description = `
+                    <p>Your answers suggest your child may not be meeting several key milestones for their age. This score (avg: ${averageScore.toFixed(1)}) indicates significant developmental delays across multiple areas.</p>
+                    <p><strong>Recommendation:</strong> It is highly recommended to seek a formal, in-depth evaluation from a pediatrician or developmental specialist immediately. Early and intensive intervention is critical.</p>
+                `;
+            } else if (averageScore < 3.5) {
+                category = "Potential for Moderate GDD";
+                badgeColor = "bg-yellow-500";
+                description = `
+                    <p>Your answers suggest some noticeable delays in a few developmental areas (avg: ${averageScore.toFixed(1)}). Your child may be meeting some milestones but struggling with others.</p>
+                    <p><strong>Recommendation:</strong> We strongly advise scheduling a consultation with a specialist. A formal assessment can pinpoint specific challenges and create a targeted therapy plan (e.g., speech, occupational therapy).</p>
+                `;
+            } else if (averageScore < 4.5) {
+                category = "Potential for Mild GDD";
+                badgeColor = "bg-blue-500";
+                description = `
+                    <p>Your answers show your child is meeting many milestones, but may have slight or emerging delays in one or two specific areas (avg: ${averageScore.toFixed(1)}).</p>
+                    <p><strong>Recommendation:</strong> This is a good time to be proactive. A consultation can help confirm if this is a minor lag or the beginning of a delay that would benefit from early support. Our developmental games are also a great place to start!</p>
+                `;
+            } else { // 4.5 and up
+                category = "Likely On-Track";
+                badgeColor = "bg-green-600";
+                description = `
+                    <p>Your answers suggest your child is meeting most or all of the key milestones for their age group (avg: ${averageScore.toFixed(1)}). This is wonderful news!</p>
+                    <p><strong>Recommendation:</strong> Continue to encourage play and learning. If you still have specific concerns about one area, don't hesitate to bring them up with your pediatrician or our team. Every child develops at a unique pace.</p>
+                `;
+            }
+
+            resultBadge.textContent = category;
+            resultBadge.className = `mt-8 inline-block px-8 py-3 rounded-full text-2xl font-bold text-white shadow-lg ${badgeColor}`;
+            resultDescription.innerHTML = description;
+
+            questionnaire.classList.add('hidden');
+            results.classList.remove('hidden');
+        }
+
+    </script>
+</body>
+</html>

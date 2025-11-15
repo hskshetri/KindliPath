@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KindliPath | Developmental Games (0-5 Years)</title>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tone.js for sound generation --><script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll from animations */
+        }
+        /* --- LOBBY STYLES --- */
+        .age-card {
+            transition: all 0.2s ease-in-out;
+            border: 2px solid transparent;
+        }
+        .age-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #00796b; /* Teal border on hover */
+        }
+
+        /* --- GAME STYLES --- */
+        .game-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+        }
+        
+        /* Animal Game Styles */
+        .animal-card {
+            border: 4px solid transparent;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .animal-card:hover {
+            transform: scale(1.05);
+            border-color: #4db6ac; /* Light Teal */
+        }
+        .animal-card.correct { border-color: #4caf50; animation: shake 0.5s; }
+        .animal-card.incorrect { border-color: #f44336; animation: wobble 0.5s; }
+
+        /* Shape Game Styles */
+        .shape-option {
+            font-size: 2.5rem; /* 40px */
+            line-height: 1;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            background-color: #f3f4f6;
+            transition: all 0.2s ease-in-out;
+            border: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1 / 1;
+        }
+        .shape-option:hover { transform: scale(1.1); }
+        .shape-option.correct { border-color: #4caf50; animation: shake 0.5s; }
+        .shape-option.incorrect { border-color: #f44336; animation: wobble 0.5s; }
+
+        /* Color Match Game Styles */
+        .color-box {
+            height: 100px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            border: 4px solid transparent;
+        }
+        .color-box:hover { transform: scale(1.05); }
+        .color-box.correct { border-color: #4caf50 !important; animation: shake 0.5s; }
+        .color-box.incorrect { border-color: #f44336 !important; animation: wobble 0.5s; }
+
+        /* Feeling Game Styles */
+        .feeling-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .feeling-button:hover { transform: scale(1.05); }
+        .feeling-button.correct { background-color: #4caf50 !important; }
+        .feeling-button.incorrect { background-color: #f44336 !important; }
+        
+        /* High Contrast Game */
+        .high-contrast-svg {
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            transition: transform 0.5s ease-out;
+        }
+        .high-contrast-svg.spin {
+            animation: spin 1s linear;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Touch & Pop Game */
+        .pop-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .pop-circle:active {
+            transform: scale(0.95);
+        }
+        .pop-circle.pop {
+            animation: pop 0.3s ease-out;
+        }
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- NEW 1-2 YEAR OLD GAME STYLES --- */
+        
+        /* Block Stacker Game */
+        #block-stack-area {
+            position: relative;
+            width: 100%;
+            max-width: 200px; /* Limit width */
+            height: 250px;
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border-bottom: 5px solid #a0aec0;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        .stack-block {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 100px;
+            height: 40px;
+            border: 2px solid rgba(0,0,0,0.3);
+            border-radius: 4px;
+            transition: all 0.2s ease-out;
+            transform: translateX(-50%);
+        }
+        .stack-block.tumble {
+            animation: tumble 0.8s ease-out forwards;
+        }
+        @keyframes tumble {
+            0% { transform: translateX(-50%) rotate(0deg); bottom: var(--bottom-pos); }
+            100% { transform: translateX(150px) rotate(90deg); bottom: 0; }
+        }
+
+        /* Body Part Game */
+        #body-figure-container {
+            position: relative;
+            width: 250px; /* Base width */
+            height: 350px; /* Taller to accommodate body */
+            margin: 0 auto;
+            background-color: #fde68a; /* Skin tone for main body */
+            border: 4px solid #fca5a5;
+            border-radius: 50% 50% 20px 20px; /* Head top, body bottom */
+        }
+        /* Individual body parts - these are the visual elements */
+        #body-head {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: inherit; /* Same as container */
+            border: none;
+        }
+        #body-eye-left, #body-eye-right {
+            position: absolute;
+            top: 50px; width: 20px; height: 20px;
+            background: white; border-radius: 50%; border: 1px solid black;
+        }
+        #body-eye-left { left: 40px; }
+        #body-eye-right { left: 90px; }
+        #body-eye-left::after, #body-eye-right::after { content: ''; display: block; width: 10px; height: 10px; background: black; border-radius: 50%; margin: 5px; }
+        #body-nose { position: absolute; top: 85px; left: 65px; width: 20px; height: 20px; background: #fca5a5; border-radius: 50%; }
+        #body-mouth { position: absolute; top: 110px; left: 50px; width: 50px; height: 15px; background: white; border-radius: 0 0 20px 20px; border: 1px solid black; }
+
+        #body-torso {
+            position: absolute;
+            top: 140px; left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 120px;
+            background-color: #a7f3d0; /* Clothes color */
+            border: 2px solid #34d399;
+            border-radius: 10px;
+        }
+        #body-hand-left, #body-hand-right, #body-foot-left, #body-foot-right {
+            position: absolute;
+            width: 50px; height: 50px;
+            background-color: inherit; /* Skin tone */
+            border: 2px solid #fca5a5;
+            border-radius: 50%;
+        }
+        #body-hand-left { top: 160px; left: -20px; }
+        #body-hand-right { top: 160px; right: -20px; }
+        #body-foot-left { bottom: -20px; left: 30px; }
+        #body-foot-right { bottom: -20px; right: 30px; }
+        
+        /* Interactive target areas */
+        .body-part-target {
+            position: absolute;
+            background-color: rgba(0, 121, 107, 0.2); /* Highlight color */
+            border: 2px dashed #00796b;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10; /* Ensure targets are clickable above base drawing */
+        }
+        .body-part-target:hover {
+            background-color: rgba(0, 121, 107, 0.4);
+        }
+        .body-part-target.correct { background-color: rgba(76, 175, 80, 0.5) !important; animation: shake 0.5s; }
+        .body-part-target.incorrect { background-color: rgba(244, 67, 54, 0.5) !important; animation: wobble 0.5s; }
+
+        /* Specific target positions for interactivity */
+        #target-head { top: 0; left: 50%; transform: translateX(-50%); width: 150px; height: 150px; border-radius: 50%; }
+        #target-eyes { top: 50px; left: 40px; width: 90px; height: 30px; border-radius: 15px; } /* Covers both eyes */
+        #target-nose { top: 80px; left: 60px; width: 30px; height: 30px; border-radius: 50%; }
+        #target-mouth { top: 105px; left: 45px; width: 60px; height: 25px; border-radius: 0 0 30px 30px; }
+        #target-tummy { top: 180px; left: 50%; transform: translateX(-50%); width: 100px; height: 80px; border-radius: 10px; }
+        #target-hand-left { top: 160px; left: 0px; width: 50px; height: 50px; border-radius: 50%; }
+        #target-hand-right { top: 160px; right: 0px; width: 50px; height: 50px; border-radius: 50%; }
+        #target-foot-left { bottom: 0px; left: 30px; width: 50px; height: 50px; border-radius: 50%; }
+        #target-foot-right { bottom: 0px; right: 30px; width: 50px; height: 50px; border-radius: 50%; }
+
+
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: scale(1.05) rotate(0); }
+            25% { transform: scale(1.05) rotate(-3deg); }
+            50% { transform: scale(1.05) rotate(3deg); }
+        }
+        @keyframes wobble {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header --><header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <!-- This link goes back to the main website --><a href="index.html#services" id="back-link" class="text-xl sm:text-2xl font-bold text-teal-700">
+                &larr; Back to KindliPath  
+            </a>
+            <a href="./assessment.html" class="bg-teal-600 text-white px-4 py-2 rounded-full font-medium hover:bg-teal-700 transition-colors shadow-sm text-sm sm:text-base">
+                Take Assessment
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content --><main class="py-16 sm:py-24">
+        
+        <!-- SECTION 1: Age Selection Lobby (Visible by default) --><div id="age-selection-lobby" class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl font-extrabold text-gray-900 text-center tracking-tight">
+                Select an Age Group
+            </h1>
+            <p class="mt-6 text-lg text-gray-600 text-center max-w-3xl mx-auto">
+                Games are tailored to be fun and effective for each developmental stage. Choose an age to get started.
+            </p>
+
+            <!-- Age Grid --><div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Age 0-1 --><div class="age-card bg-white p-8 rounded-lg shadow text-center flex flex-col">
+                    <h2 class="text-3xl font-bold text-teal-800">0 - 1 Year</h2>
+                    <p class="mt-4 text-gray-600 flex-grow">Focus on sensory exploration, listening to new sounds, and simple cause-and-effect. These games are gentle and engaging for new explorers.</p>
+                    <button data-age="0-1" class="age-select-btn mt-8 inline-block w-full px-8 py-3 bg-teal-600 text-white font-medium rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
+                        Play Games
+                    </button>
+                </div>
+                
+                <!-- Age 1-2 --><div class="age-card bg-white p-8 rounded-lg shadow text-center flex flex-col">
+                    <h2 class="text-3xl font-bold text-teal-800">1 - 2 Years</h2>
+                    <p class="mt-4 text-gray-600 flex-grow">Encourage matching simple shapes and sounds. These games help build core listening and visual matching skills for growing toddlers.</p>
+                    <button data-age="1-2" class="age-select-btn mt-8 inline-block w-full px-8 py-3 bg-teal-600 text-white font-medium rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
+                        Play Games
+                    </button>
+                </div>
+
+                <!-- Age 2-3 --><div class="age-card bg-white p-8 rounded-lg shadow text-center flex flex-col">
+                    <h2 class="text-3xl font-bold text-teal-800">2 - 3 Years</h2>
+                    <p class="mt-4 text-gray-600 flex-grow">Introduce identifying feelings, matching colors, and sorting more complex shapes. Perfect for curious minds learning new concepts.</p>
+                    <button data-age="2-3" class="age-select-btn mt-8 inline-block w-full px-8 py-3 bg-teal-600 text-white font-medium rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
+                        Play Games
+                    </button>
+                </div>
+
+                <!-- Age 3-4 --><div class="age-card bg-white p-8 rounded-lg shadow text-center flex flex-col">
+                    <h2 class="text-3xl font-bold text-teal-800">3 - 4 Years</h2>
+                    <p class="mt-4 text-gray-600 flex-grow">Challenge kids with color-word matching, identifying more complex feelings, and multi-step matching games.</p>
+                    <button data-age="3-4" class="age-select-btn mt-8 inline-block w-full px-8 py-3 bg-teal-600 text-white font-medium rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
+                        Play Games
+                    </button>
+                </div>
+
+                <!-- Age 4-5 --><div class="age-card bg-white p-8 rounded-lg shadow text-center flex flex-col">
+                    <h2 class="text-3xl font-bold text-teal-800">4 - 5 Years</h2>
+                    <p class="mt-4 text-gray-600 flex-grow">All games are available! These activities reinforce pre-reading skills, complex sorting, and social-emotional awareness.</p>
+                    <button data-age="4-5" class="age-select-btn mt-8 inline-block w-full px-8 py-3 bg-teal-600 text-white font-medium rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105">
+                        Play Games
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- SECTION 2: Game Center (Hidden by default) --><div id="game-center" class="hidden container mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 id="game-center-title" class="text-4xl font-extrabold text-gray-900 text-center tracking-tight">
+                Interactive Game Center
+            </h1>
+            <p id="game-center-subtitle" class="mt-6 text-lg text-gray-600 text-center max-w-3xl mx-auto">
+                These simple, interactive games are designed to help build key skills in a fun, positive, and engaging way.
+            </p>
+
+            <!-- Game Grid --><div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                
+                <!-- Game 1: Animal Sound Match (Used for 0-1 and up) --><div id="game-animal" class="game-card">
+                    <h2 class="text-2xl font-bold text-teal-800">1. Animal Sound Match</h2>
+                    <p class="mt-2 text-gray-600 flex-grow">
+                        <strong>Skill:</strong> Speech & Cognitive (Listening, Matching)
+                        <br>
+                        Listen to the sound, then click the animal that made it!
+                    </p>
+                    <button id="play-sound-btn" class="mt-8 w-full px-6 py-3 bg-teal-600 text-white text-lg font-bold rounded-full shadow-lg hover:bg-teal-700 transition-transform hover:scale-105">
+                        Click to Start!
+                    </button>
+                    <div id="animal-grid" class="mt-6 grid grid-cols-2 gap-4">
+                        <!-- Animal cards will be generated by JS --></div>
+                    <p id="animal-message" class="mt-4 text-xl font-semibold text-teal-700 h-8 text-center"></p>
+                </div>
+
+                <!-- Game 2: Shape Sorter (Used for 1-2 and up) --><div id="game-shape" class="game-card">
+                    <h2 class="text-2xl font-bold text-teal-800">2. Shape Sorter</h2>
+                    <p class="mt-2 text-gray-600 flex-grow">
+                        <strong>Skill:</strong> Cognitive (Visual Matching, Sorting)
+                        <br>
+                        Click the shape that matches the one at the top!
+                    </p>
+                    <div class="mt-8 text-center">
+                        <p class="text-lg font-medium text-gray-700">Find this shape:</p>
+                        <div id="target-shape" class="text-7xl font-bold text-blue-600 my-4">🔵</div>
+                    </div>
+                    <div id="shape-grid" class="mt-4 grid grid-cols-4 gap-4">
+                        <div class="shape-option"></div>
+                        <div class="shape-option"></div>
+                        <div class="shape-option"></div>
+                        <div class="shape-option"></div>
+                    </div>
+                    <p id="shape-message" class="mt-4 text-xl font-semibold text-teal-700 h-8 text-center"></p>
+                </div>
+
+                <!-- Game 3: Color Match (Used for 3-4 and up) --><div id="game-color" class="game-card">
+                    <h2 class="text-2xl font-bold text-teal-800">3. Color Match</h2>
+                    <p class="mt-2 text-gray-600 flex-grow">
+                        <strong>Skill:</strong> Cognitive (Reading, Color Identification)
+                        <br>
+                        Click the colored box that matches the word!
+                    </p>
+                    <div class="mt-8 text-center">
+                        <p class="text-lg font-medium text-gray-700">Find this color:</p>
+                        <div id="target-color-word" class="text-5xl font-extrabold text-gray-800 my-4">RED</div>
+                    </div>
+                    <div id="color-grid" class="mt-4 grid grid-cols-2 gap-4">
+                        <div class="color-box"></div>
+                        <div class="color-box"></div>
+                        <div class="color-box"></div>
+                        <div class="color-box"></div>
+                    </div>
+                    <p id="color-message" class="mt-4 text-xl font-semibold text-teal-700 h-8 text-center"></p>
+                </div>
+
+                <!-- Game 4: Feeling Faces (Used for 2-3 and up) --><div id="game-feeling" class="game-card">
+                    <h2 class="text-2xl font-bold text-teal-800">4. Feeling Faces</h2>
+                    <p class="mt-2 text-gray-600 flex-grow">
+                        <strong>Skill:</strong> Social & Emotional (Identifying Emotions)
+                        <br>
+                        Look at the face. How do they feel?
+                    </p>
+                    <div class="mt-8 text-center">
+                        <div id="feeling-face" class="text-9xl my-4">😊</div>
+                        <p id="feeling-message" class="mt-4 text-xl font-semibold text-teal-700 h-8"></p>
+                    </div>
+                    <div id="feeling-options" class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <!-- Feeling buttons will be generated by JS --></div>
+                </div>
+
+                <!-- Game 5: Peek-a-Boo (For 0-1) --><div id="game-peekaboo" class="game-card">
+                    <h2 class="text-2xl font-bold text-teal-800">Peek-a-Boo!</h2>
+                    <p class="mt-2 text-gray-600 flex-grow">
+                        <strong>Skill:</strong> Social & Cognitive (Object Permanence)
+                        <br>
+                        A fun game of peek-a-boo! Click the button to play.
+                    </p>
+                    <div class="flex-grow flex flex-col items-center justify-center">
+                        <div id="peekaboo-face" class="text-9xl my-4">🙈</div>
+                        <button id="peekaboo-btn" class="px-8 py-3 bg-blue-500 text-white text-lg font-bold rounded-full shadow-lg hover:bg-blue-600 transition-transform hover:scale-105">
+                            Peek-a-Boo!
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Game 6: High-Contrast Spinner (For 0-1) --><div id="game-contrast" class="game-card">
+                    <h2 class="text-2xl font-bold text-teal-800">High-Contrast Spinner</h2>
+                    <p class="mt-2 text-gray-600 flex-grow">
+                        <strong>Skill:</strong> Sensory (Visual Tracking)
+                        <br>
+                        Click the pattern to make it spin!
+                    </p>
+                    <div class="flex-grow flex flex-col items-center justify-center">
+                        <svg id="contrast-svg" class="high-contrast-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="50" fill="black"/>
+                            <path d="M 50 50 A 50 50 0 0 1 100 50 L 50 50 Z" fill="white"/>
+                            <circle cx="50" cy="50" r="40" fill="white"/>
+                            <path d="M 50 50 A 40 40 0 0 0 10 50 L 50 50 Z" fill="black"/>
+                            <circle cx="50" cy="50" r="30" fill="black"/>
+                            <path d="M 50 50 A 30 30 0 0 1 80 50 L 50 50 Z" fill="white"/>
+                            <circle cx="50" cy="50" r="20" fill="white"/>
+                            <path d="M 50 50 A 20 20 0 0 0 30 50 L 50 50 Z" fill="black"/>
+                            <circle cx="50" cy="50" r="10" fill="black"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Game 7: Touch & Pop (For 0-1) --><div id="game-pop" class="game-card">
+                    <h2 class="text-2xl font-bold text-teal-800">Touch & Pop</h2>
+                    <p class="mt-2 text-gray-600 flex-grow">
+                        <strong>Skill:</strong> Cognitive (Cause & Effect)
+                        <br>
+                        Tap the big circle to make it POP!
+                    </p>
+                    <div class="flex-grow flex flex-col items-center justify-center">
+                        <div id="pop-circle" class="pop-circle bg-red-500">
+                            Touch Me!
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- NEW Game 8: Block Stacker (For 1-2) --><div id="game-stacker" class="game-card">
+                    <h2 class="text-2xl font-bold text-teal-800">Block Stacker</h2>
+                    <p class="mt-2 text-gray-600 flex-grow">
+                        <strong>Skill:</strong> Fine Motor (Stacking)
+                        <br>
+                        Click the area to stack a block. How high can you go?
+                    </p>
+                    <div class="flex-grow flex flex-col items-center justify-center">
+                        <div id="block-stack-area">
+                            <!-- Blocks added by JS --></div>
+                        <p id="block-message" class="mt-4 text-xl font-semibold text-teal-700 h-8 text-center"></p>
+                    </div>
+                </div>
+                
+                <!-- UPDATED Game 9: Where's Your Body Part? (For 1-2 and up) --><div id="game-bodypart" class="game-card">
+                    <h2 class="text-2xl font-bold text-teal-800">Where's Your Body Part?</h2>
+                    <p class="mt-2 text-gray-600 flex-grow">
+                        <strong>Skill:</strong> Language & Cognitive (Identifying Body Parts)
+                        <br>
+                        Listen and touch the right part of the figure!
+                    </p>
+                    <div class="flex-grow flex flex-col items-center justify-center">
+                        <p id="bodypart-prompt" class="text-2xl font-bold text-blue-600 my-4">Click to Start!</p>
+                        <div id="body-figure-container">
+                            <!-- Basic Figure Drawing --><div id="body-head">
+                                <div id="body-eye-left"></div>
+                                <div id="body-eye-right"></div>
+                                <div id="body-nose"></div>
+                                <div id="body-mouth"></div>
+                            </div>
+                            <div id="body-torso"></div>
+                            <div id="body-hand-left"></div>
+                            <div id="body-hand-right"></div>
+                            <div id="body-foot-left"></div>
+                            <div id="body-foot-right"></div>
+
+                            <!-- Interactive Target Overlays --><div id="target-head" class="body-part-target" data-part="head"></div>
+                            <div id="target-eyes" class="body-part-target" data-part="eyes"></div>
+                            <div id="target-nose" class="body-part-target" data-part="nose"></div>
+                            <div id="target-mouth" class="body-part-target" data-part="mouth"></div>
+                            <div id="target-tummy" class="body-part-target" data-part="tummy"></div>
+                            <div id="target-hand-left" class="body-part-target" data-part="hand"></div>
+                            <div id="target-hand-right" class="body-part-target" data-part="hand"></div>
+                            <div id="target-foot-left" class="body-part-target" data-part="foot"></div>
+                            <div id="target-foot-right" class="body-part-target" data-part="foot"></div>
+                        </div>
+                        <p id="bodypart-message" class="mt-4 text-xl font-semibold text-teal-700 h-8 text-center"></p>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- No Games Message --><div id="no-games-message" class="hidden text-center py-16 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-gray-800">More Games Coming Soon!</h2>
+                <p class="mt-4 text-lg text-gray-600">These games are a bit too advanced for this age.</p>
+                <button id="back-to-lobby-btn" class="mt-8 inline-block px-8 py-3 bg-teal-600 text-white font-medium rounded-full shadow-md hover:bg-teal-700">
+                    Back to Age Select
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer --><footer class="bg-gray-800 text-gray-300 mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+            <p>&copy; 2025 KindliPath. All rights reserved. | <a href="index.html" class="hover:text-white">Back to Main Site</a></p>
+        </div>
+    </footer>
+
+
+    <script>
+       
+        // Check if Tone.js is loaded
+        if (typeof Tone === 'undefined') {
+            console.error("Tone.js failed to load. Sound will be disabled.");
+            // Create a dummy Tone object to avoid errors
+            window.Tone = {
+                now: () => 0,
+                Synth: function() { return { toDestination: () => ({ triggerAttackRelease: () => {}, triggerAttack: () => {}, triggerRelease: () => {}, volume: { value: 0 } }) }},
+                PolySynth: function() { return { toDestination: () => ({ triggerAttackRelease: () => {}, volume: { value: 0 } }) }},
+                start: () => Promise.resolve()
+            };
+        }
+
+        // --- GLOBAL SYNTHS ---
+        const sounds = {
+            synth: new Tone.Synth().toDestination(),
+            polySynth: new Tone.PolySynth().toDestination(),
+            ding: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination(),
+            peekaboo: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination(),
+            chime: new Tone.Synth({ oscillator: { type: "triangle" }, envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.2 } }).toDestination(),
+            pop: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination(),
+            stack: new Tone.Synth({ oscillator: { type: "sawtooth" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination(),
+            tumble: new Tone.PolySynth().toDestination(),
+            voice: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 } }).toDestination()
+        };
+        sounds.polySynth.volume.value = -6;
+        sounds.ding.volume.value = -3;
+        sounds.peekaboo.volume.value = -3;
+        sounds.chime.volume.value = -5;
+        sounds.pop.volume.value = -3;
+        sounds.stack.volume.value = -10;
+        sounds.tumble.volume.value = -8;
+        sounds.voice.volume.value = -3;
+        
+        // --- Utility Function ---
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- PAGE NAVIGATION LOGIC ---
+        const ageLobby = document.getElementById('age-selection-lobby');
+        const gameCenter = document.getElementById('game-center');
+        const ageSelectButtons = document.querySelectorAll('.age-select-btn');
+        const backToLobbyBtn = document.getElementById('back-to-lobby-btn');
+        const backLink = document.getElementById('back-link');
+
+        function showGames(age) {
+            // Hide lobby, show games
+            ageLobby.classList.add('hidden');
+            gameCenter.classList.remove('hidden');
+            window.scrollTo(0, 0);
+
+           
+
+            // Run the filter logic
+            filterGamesByAge(age);
+        }
+
+        function showLobby() {
+            // Hide games, show lobby
+            gameCenter.classList.add('hidden');
+            ageLobby.classList.remove('hidden');
+            window.scrollTo(0, 0);
+
+            // Change back link to go to main site
+            backLink.textContent = '← Back to Bright Futures';
+            backLink.href = 'index.html'; // Make it a real link
+            backLink.onclick = null; // Remove click handler
+        }
+
+        // Add click listeners to all age buttons
+        ageSelectButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                showGames(button.dataset.age);
+            });
+        });
+        
+        // Add click listener to the "Back" button in the "No Games" message
+        if (backToLobbyBtn) {
+            backToLobbyBtn.addEventListener('click', showLobby);
+        }
+
+        // --- GAME 1: ANIMAL SOUND MATCH ---
+        (function() {
+            const animalData = [
+                { id: "Cow", emoji: "🐄", sound: () => {
+                    const now = Tone.now();
+                    sounds.synth.triggerAttackRelease("G3", "8n", now);
+                    sounds.synth.triggerAttackRelease("E3", "4n", now + 0.2);
+                }},
+                { id: "Duck", emoji: "🦆", sound: () => {
+                    const now = Tone.now();
+                    sounds.polySynth.triggerAttackRelease(["C5", "E5"], "16n", now);
+                    sounds.polySynth.triggerAttackRelease(["C5", "E5"], "16n", now + 0.15);
+                }},
+                { id: "Sheep", emoji: "🐑", sound: () => {
+                    const now = Tone.now();
+                    sounds.synth.triggerAttack("A4", now);
+                    sounds.synth.triggerRelease(now + 0.5);
+                }},
+                { id: "Dog", emoji: "🐕", sound: () => {
+                    const now = Tone.now();
+                    sounds.polySynth.triggerAttackRelease(["D3", "F3"], "16n", now);
+                }},
+                { id: "Pig", emoji: "🐖", sound: () => {
+                    const now = Tone.now();
+                    sounds.polySynth.triggerAttackRelease(["G4", "B4"], "16n", now);
+                    sounds.polySynth.triggerAttackRelease(["F4", "A4"], "16n", now + 0.15);
+                }},
+                { id: "Cat", emoji: "🐈", sound: () => {
+                    const now = Tone.now();
+                    sounds.synth.triggerAttackRelease("B5", "8n", now);
+                    sounds.synth.triggerAttackRelease("A5", "8n", now + 0.1);
+                }},
+                { id: "Horse", emoji: "🐎", sound: () => {
+                    const now = Tone.now();
+                    sounds.synth.triggerAttack("G3", now);
+                    sounds.synth.triggerRelease(now + 0.4);
+                }},
+                { id: "Chicken", emoji: "🐓", sound: () => {
+                    const now = Tone.now();
+                    sounds.polySynth.triggerAttackRelease(["C5", "E5"], "16n", now);
+                    sounds.polySynth.triggerAttackRelease(["C5", "E5"], "16n", now + 0.1);
+                    sounds.polySynth.triggerAttackRelease(["C5", "E5"], "16n", now + 0.2);
+                }}
+            ];
+            
+            let currentAnimal = null;
+            let gameStarted = false;
+            let awaitingClick = false;
+
+            const playBtn = document.getElementById('play-sound-btn');
+            const animalGrid = document.getElementById('animal-grid');
+            const gameMessage = document.getElementById('animal-message');
+
+            function getNextAnimalRound() {
+                const options = shuffle([...animalData]).slice(0, 4);
+                currentAnimal = options[Math.floor(Math.random() * 4)];
+                
+                playBtn.textContent = "Play Sound: Who says... ?";
+                gameMessage.textContent = "Listen... then click!";
+                animalGrid.innerHTML = ""; 
+                
+                options.forEach(animal => {
+                    const card = document.createElement('div');
+                    card.className = "animal-card";
+                    card.dataset.animal = animal.id;
+                    card.innerHTML = `<span class="text-6xl sm:text-7xl">${animal.emoji}</span><h3 class="text-xl font-bold text-gray-800 mt-2">${animal.id}</h3>`;
+                    card.addEventListener('click', () => onAnimalClick(card, animal));
+                    animalGrid.appendChild(card);
+                    card.style.pointerEvents = 'none';
+                });
+                
+                setTimeout(() => {
+                    Tone.start().then(() => {
+                        currentAnimal.sound();
+                        playBtn.textContent = "Play Sound Again?";
+                        awaitingClick = true;
+                        animalGrid.querySelectorAll('.animal-card').forEach(card => card.style.pointerEvents = 'auto');
+                    });
+                }, 500);
+            }
+            
+            function onAnimalClick(card, animal) {
+                if (!awaitingClick) return;
+                const selectedAnimalId = animal.id;
+                awaitingClick = false;
+
+                if (selectedAnimalId === currentAnimal.id) {
+                    card.classList.add('correct');
+                    gameMessage.textContent = "Great job!";
+                    sounds.ding.triggerAttackRelease("C5", "8n", Tone.now());
+                    
+                    animalGrid.querySelectorAll('.animal-card').forEach(c => {
+                        if (c.dataset.animal !== currentAnimal.id) c.style.opacity = '0.3';
+                    });
+                    
+                    setTimeout(() => currentAnimal.sound(), 300);
+                    playBtn.textContent = "Play Next!";
+                    
+                } else {
+                    card.classList.add('incorrect');
+                    gameMessage.textContent = "Oops, try again!";
+                    sounds.synth.triggerAttackRelease("C3", "8n", Tone.now());
+                    
+                    setTimeout(() => {
+                        awaitingClick = true;
+                        card.classList.remove('incorrect');
+                        gameMessage.textContent = "Listen... then click!";
+                    }, 1000);
+                }
+            }
+            
+            const gameCard = document.getElementById('game-animal');
+            if (gameCard) {
+                playBtn.addEventListener('click', () => {
+                    if (!gameStarted) gameStarted = true;
+                    getNextAnimalRound();
+                });
+            }
+        })();
+
+        // --- GAME 2: SHAPE SORTER ---
+        (function() {
+            const shapes = [
+                { id: "circle", emoji: "🔵" },
+                { id: "square", emoji: "🟥" },
+                { id: "star", emoji: "⭐" },
+                { id: "triangle", emoji: "🔺" },
+                { id: "heart", emoji: "💖" },
+                { id: "diamond", emoji: "🔷" },
+                { id: "crescent", emoji: "🌙" }
+            ];
+            let currentShape = null;
+            let awaitingClick = true;
+
+            const targetShapeEl = document.getElementById('target-shape');
+            const shapeGrid = document.getElementById('shape-grid');
+            const gameMessage = document.getElementById('shape-message');
+            const gameCard = document.getElementById('game-shape');
+
+            function getNextShape() {
+                currentShape = shapes[Math.floor(Math.random() * shapes.length)];
+                let incorrectOptions = shapes.filter(s => s.id !== currentShape.id);
+                incorrectOptions = shuffle(incorrectOptions).slice(0, 3);
+                let options = [currentShape, ...incorrectOptions];
+                options = shuffle(options);
+                
+                targetShapeEl.textContent = currentShape.emoji;
+                gameMessage.textContent = "";
+                shapeGrid.innerHTML = ""; // Clear grid
+                awaitingClick = true;
+                
+                options.forEach(shape => {
+                    const optionEl = document.createElement('div');
+                    optionEl.className = "shape-option";
+                    optionEl.textContent = shape.emoji;
+                    optionEl.dataset.shape = shape.id;
+                    optionEl.addEventListener('click', () => {
+                        if (!awaitingClick) return;
+                        const selectedShape = optionEl.dataset.shape;
+
+                        if (selectedShape === currentShape.id) {
+                            awaitingClick = false;
+                            optionEl.classList.add('correct');
+                            gameMessage.textContent = "That's right!";
+                            sounds.ding.triggerAttackRelease("E5", "8n", Tone.now());
+                            setTimeout(getNextShape, 1500);
+                        } else {
+                            optionEl.classList.add('incorrect');
+                            gameMessage.textContent = "Try again!";
+                            sounds.synth.triggerAttackRelease("C3", "8n", Tone.now());
+                            setTimeout(() => {
+                                optionEl.classList.remove('incorrect');
+                                gameMessage.textContent = "";
+                            }, 1000);
+                        }
+                    });
+                    shapeGrid.appendChild(optionEl);
+                });
+            }
+            
+            if (gameCard) {
+                getNextShape(); // Initial setup
+            }
+        })();
+
+        // --- GAME 3: COLOR MATCH ---
+        (function() {
+            const colors = [
+                { id: "red", name: "RED", hex: "#f44336" },
+                { id: "blue", name: "BLUE", hex: "#2196F3" },
+                { id: "green", name: "GREEN", hex: "#4CAF50" },
+                { id: "yellow", name: "YELLOW", hex: "#FFEB3B" },
+                { id: "purple", name: "PURPLE", hex: "#9C27B0" },
+                { id: "orange", name: "ORANGE", hex: "#FF9800" },
+                { id: "black", name: "BLACK", hex: "#212121" },
+                { id: "white", name: "WHITE", hex: "#FFFFFF" }
+            ];
+            let currentColor = null;
+            let awaitingClick = true;
+
+            const targetWordEl = document.getElementById('target-color-word');
+            const colorGrid = document.getElementById('color-grid');
+            const gameMessage = document.getElementById('color-message');
+            const gameCard = document.getElementById('game-color');
+
+            function getNextColor() {
+                currentColor = colors[Math.floor(Math.random() * colors.length)];
+                let incorrectOptions = colors.filter(c => c.id !== currentColor.id);
+                incorrectOptions = shuffle(incorrectOptions).slice(0, 3);
+                let options = [currentColor, ...incorrectOptions];
+                options = shuffle(options);
+                
+                targetWordEl.textContent = currentColor.name;
+                targetWordEl.style.color = (currentColor.id === 'white') ? '#000' : '#212121';
+                gameMessage.textContent = "";
+                colorGrid.innerHTML = "";
+                awaitingClick = true;
+                
+                options.forEach(color => {
+                    const box = document.createElement('div');
+                    box.className = "color-box";
+                    box.dataset.color = color.id;
+                    box.style.backgroundColor = color.hex;
+                    if (color.id === 'white') box.style.border = "4px solid #e0e0e0";
+                    
+                    box.addEventListener('click', () => {
+                        if (!awaitingClick) return;
+                        const selectedColor = box.dataset.color;
+
+                        if (selectedColor === currentColor.id) {
+                            awaitingClick = false;
+                            box.classList.add('correct');
+                            gameMessage.textContent = "Yes, " + currentColor.name + "!";
+                            sounds.ding.triggerAttackRelease("A5", "8n", Tone.now());
+                            setTimeout(getNextColor, 1500);
+                        } else {
+                            box.classList.add('incorrect');
+                            gameMessage.textContent = "Not that one, try again!";
+                            sounds.synth.triggerAttackRelease("C3", "8n", Tone.now());
+                            setTimeout(() => {
+                                box.classList.remove('incorrect');
+                                gameMessage.textContent = "";
+                            }, 1000);
+                        }
+                    });
+                    colorGrid.appendChild(box);
+                });
+            }
+
+            if(gameCard) {
+                getNextColor(); // Initial setup
+            }
+        })();
+
+
+        // --- GAME 4: FEELING FACES ---
+        (function() {
+            const feelings = [
+                { id: "happy", emoji: "😊", name: "Happy" },
+                { id: "sad", emoji: "😢", name: "Sad" },
+                { id: "angry", emoji: "😠", name: "Angry" },
+                { id: "surprised", emoji: "😮", name: "Surprised" }
+            ];
+            let currentFeeling = null;
+            let awaitingClick = true;
+
+            const faceEl = document.getElementById('feeling-face');
+            const messageEl = document.getElementById('feeling-message');
+            const optionsContainer = document.getElementById('feeling-options');
+            const gameCard = document.getElementById('game-feeling');
+
+            function getNextFeeling() {
+                currentFeeling = feelings[Math.floor(Math.random() * feelings.length)];
+                let incorrectOptions = feelings.filter(f => f.id !== currentFeeling.id);
+                incorrectOptions = shuffle(incorrectOptions).slice(0, 2);
+                let options = [currentFeeling, ...incorrectOptions];
+                options = shuffle(options);
+                
+                faceEl.textContent = currentFeeling.emoji;
+                messageEl.textContent = "";
+                awaitingClick = true;
+                optionsContainer.innerHTML = ""; 
+                
+                options.forEach(feeling => {
+                    const button = document.createElement('button');
+                    button.dataset.feeling = feeling.id;
+                    button.className = "feeling-button px-4 py-3 bg-blue-500 text-white text-lg font-bold rounded-lg shadow hover:bg-blue-600";
+                    button.textContent = feeling.name;
+                    
+                    button.addEventListener('click', () => {
+                        if (!awaitingClick) return;
+                        const selectedId = button.dataset.feeling;
+                        optionsContainer.querySelectorAll('button').forEach(btn => btn.disabled = true);
+
+                        if (selectedId === currentFeeling.id) {
+                            awaitingClick = false;
+                            button.classList.add('correct');
+                            messageEl.textContent = "You got it!";
+                            sounds.ding.triggerAttackRelease("G5", "8n", Tone.now());
+                            setTimeout(getNextFeeling, 1500);
+                        } else {
+                            button.classList.add('incorrect');
+                            messageEl.textContent = "Not quite, try again!";
+                            sounds.synth.triggerAttackRelease("C3", "8n", Tone.now());
+                            const correctBtn = optionsContainer.querySelector(`[data-feeling="${currentFeeling.id}"]`);
+                            if (correctBtn) correctBtn.classList.add('correct');
+                            awaitingClick = false;
+                            setTimeout(getNextFeeling, 2000);
+                        }
+                    });
+                    optionsContainer.appendChild(button);
+                });
+            }
+
+            if (gameCard) {
+                getNextFeeling(); // Initial setup
+            }
+        })();
+
+        // --- GAME 5: PEEK-A-BOO ---
+        (function() {
+            const gameCard = document.getElementById('game-peekaboo');
+            if (!gameCard) return;
+
+            const faceEl = document.getElementById('peekaboo-face');
+            const btn = document.getElementById('peekaboo-btn');
+            let isHiding = true;
+
+            btn.addEventListener('click', () => {
+                Tone.start();
+                if (isHiding) {
+                    faceEl.textContent = '😊';
+                    btn.textContent = 'Again!';
+                    sounds.peekaboo.triggerAttackRelease("C6", "16n", Tone.now());
+                } else {
+                    faceEl.textContent = '🙈';
+                    btn.textContent = 'Peek-a-Boo!';
+                }
+                isHiding = !isHiding;
+            });
+        })();
+
+        // --- GAME 6: HIGH-CONTRAST SPINNER ---
+        (function() {
+            const gameCard = document.getElementById('game-contrast');
+            if (!gameCard) return;
+
+            const svg = document.getElementById('contrast-svg');
+            svg.addEventListener('click', () => {
+                Tone.start();
+                if (!svg.classList.contains('spin')) {
+                    svg.classList.add('spin');
+                    sounds.chime.triggerAttackRelease("G5", "4n", Tone.now());
+                    setTimeout(() => {
+                        svg.classList.remove('spin');
+                    }, 1000); // Animation duration is 1s
+                }
+            });
+        })();
+
+        // --- GAME 7: TOUCH & POP ---
+        (function() {
+            const gameCard = document.getElementById('game-pop');
+            if (!gameCard) return;
+            
+            const circle = document.getElementById('pop-circle');
+            const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500'];
+            let colorIndex = 0;
+
+            circle.addEventListener('click', () => {
+                Tone.start();
+                // Play sound
+                sounds.pop.triggerAttackRelease("C5", "16n", Tone.now());
+                
+                // Pop animation
+                circle.classList.add('pop');
+                setTimeout(() => {
+                    circle.classList.remove('pop');
+                }, 300); // Animation duration is 0.3s
+                
+                // Change color
+                circle.classList.remove(colors[colorIndex]);
+                colorIndex = (colorIndex + 1) % colors.length;
+                circle.classList.add(colors[colorIndex]);
+            });
+        })();
+        
+        // --- NEW GAME 8: BLOCK STACKER ---
+        (function() {
+            const gameCard = document.getElementById('game-stacker');
+            if (!gameCard) return;
+
+            const stackArea = document.getElementById('block-stack-area');
+            const messageEl = document.getElementById('block-message');
+            const blockColors = ['bg-red-400', 'bg-blue-400', 'bg-green-400', 'bg-yellow-400', 'bg-purple-400'];
+            let blockCount = 0;
+
+            function resetStack() {
+                messageEl.textContent = "Click to stack!";
+                const blocks = stackArea.querySelectorAll('.stack-block');
+                blocks.forEach((block, index) => {
+                    block.classList.add('tumble');
+                    block.style.setProperty('--bottom-pos', `${index * 40}px`);
+                });
+                
+                const now = Tone.now();
+                sounds.tumble.triggerAttackRelease(['C3', 'E3', 'G3'], '4n', now);
+                sounds.tumble.triggerAttackRelease(['D3', 'F3', 'A3'], '4n', now + 0.1);
+                
+                setTimeout(() => {
+                    stackArea.innerHTML = '';
+                    blockCount = 0;
+                }, 800);
+            }
+
+            stackArea.addEventListener('click', () => {
+                Tone.start();
+                if (blockCount >= 5) {
+                    resetStack();
+                    return;
+                }
+
+                const newBlock = document.createElement('div');
+                newBlock.className = 'stack-block';
+                newBlock.style.backgroundColor = blockColors[blockCount % blockColors.length];
+                newBlock.style.bottom = `${blockCount * 40}px`; // 40px height
+                stackArea.appendChild(newBlock);
+                
+                sounds.stack.triggerAttackRelease("C4", "16n", Tone.now());
+                
+                blockCount++;
+
+                if (blockCount === 3) {
+                    messageEl.textContent = "Wow! 3 blocks!";
+                    sounds.ding.triggerAttackRelease("C5", "8n", Tone.now() + 0.1);
+                } else if (blockCount === 5) {
+                    messageEl.textContent = "Whoa! Too high!";
+                    setTimeout(resetStack, 500);
+                } else {
+                    messageEl.textContent = `${blockCount} block${blockCount > 1 ? 's' : ''}!`;
+                }
+            });
+
+        })();
+        
+        // --- UPDATED GAME 9: WHERE'S YOUR BODY PART? ---
+        (function() {
+            const gameCard = document.getElementById('game-bodypart');
+            if (!gameCard) return;
+
+            const parts = [
+                { id: 'nose', prompt: 'Where is the NOSE?', sound: 'G4' },
+                { id: 'eyes', prompt: 'Where are the EYES?', sound: 'A4' },
+                { id: 'mouth', prompt: 'Where is the MOUTH?', sound: 'B4' },
+                { id: 'head', prompt: 'Where is the HEAD?', sound: 'C5' },
+                { id: 'tummy', prompt: 'Where is the TUMMY?', sound: 'D4' },
+                { id: 'hand', prompt: 'Where is a HAND?', sound: 'E4' }, // Both hands will respond
+                { id: 'foot', prompt: 'Where is a FOOT?', sound: 'F4' }   // Both feet will respond
+            ];
+            let currentPart = null;
+            let awaitingClick = false;
+
+            const promptEl = document.getElementById('bodypart-prompt');
+            const messageEl = document.getElementById('bodypart-message');
+            const targets = document.querySelectorAll('.body-part-target'); // Use the new class
+
+            function getNextPart() {
+                currentPart = parts[Math.floor(Math.random() * parts.length)];
+                promptEl.textContent = currentPart.prompt;
+                messageEl.textContent = "";
+                awaitingClick = true;
+                
+                targets.forEach(t => {
+                    t.classList.remove('correct', 'incorrect');
+                    t.style.backgroundColor = 'rgba(0, 121, 107, 0.2)'; // Reset highlight
+                });
+
+                Tone.start().then(() => {
+                    sounds.voice.triggerAttackRelease(currentPart.sound, "4n", Tone.now());
+                });
+            }
+
+            targets.forEach(target => {
+                target.addEventListener('click', () => {
+                    if (!awaitingClick) return;
+                    
+                    const selectedPart = target.dataset.part;
+                    if (selectedPart === currentPart.id) {
+                        awaitingClick = false;
+                        target.classList.add('correct');
+                        messageEl.textContent = "You found the " + currentPart.id + "!";
+                        sounds.ding.triggerAttackRelease("C5", "8n", Tone.now());
+                        setTimeout(getNextPart, 1500);
+                    } else {
+                        target.classList.add('incorrect');
+                        messageEl.textContent = "Oops! Try again.";
+                        sounds.synth.triggerAttackRelease("C3", "8n", Tone.now());
+                        setTimeout(() => {
+                            target.classList.remove('incorrect');
+                            messageEl.textContent = "";
+                        }, 1000);
+                    }
+                });
+            });
+            
+            // Start game on first click on prompt
+            promptEl.addEventListener('click', () => {
+                if (!currentPart) {
+                    getNextPart();
+                } else {
+                    // Re-play prompt sound
+                     Tone.start().then(() => {
+                        sounds.voice.triggerAttackRelease(currentPart.sound, "4n", Tone.now());
+                    });
+                }
+            }, { once: false });
+
+        })();
+        
+        // --- AGE-BASED GAME FILTERING (UPDATED) ---
+        function filterGamesByAge(age) {
+            const title = document.getElementById('game-center-title');
+            const subtitle = document.getElementById('game-center-subtitle');
+
+            if (!title) return; // Exit if not on the game page
+            
+            // Get all games
+            const gameAnimal = document.getElementById('game-animal');
+            const gameShape = document.getElementById('game-shape');
+            const gameColor = document.getElementById('game-color');
+            const gameFeeling = document.getElementById('game-feeling');
+            const gamePeekaboo = document.getElementById('game-peekaboo');
+            const gameContrast = document.getElementById('game-contrast');
+            const gamePop = document.getElementById('game-pop');
+            const gameStacker = document.getElementById('game-stacker'); 
+            const gameBodypart = document.getElementById('game-bodypart'); 
+            const noGamesMessage = document.getElementById('no-games-message');
+            
+            let gamesFound = false;
+            
+            // Hide all games by default
+            gameAnimal.style.display = 'none';
+            gameShape.style.display = 'none';
+            gameColor.style.display = 'none';
+            gameFeeling.style.display = 'none';
+            gamePeekaboo.style.display = 'none';
+            gameContrast.style.display = 'none';
+            gamePop.style.display = 'none';
+            gameStacker.style.display = 'none'; 
+            gameBodypart.style.display = 'none'; 
+            noGamesMessage.style.display = 'none';
+
+
+            if (age === '0-1') {
+                title.textContent = "Games for 0-1 Year Olds";
+                subtitle.textContent = "Simple, high-contrast, cause-and-effect games for sensory play.";
+                
+                // Show the 4 games for 0-1
+                gameAnimal.style.display = 'flex';
+                gamePeekaboo.style.display = 'flex';
+                gameContrast.style.display = 'flex';
+                gamePop.style.display = 'flex';
+                
+                // Simplify Animal Game for this age (if needed, currently already simple)
+                const animalBtn = document.getElementById('play-sound-btn');
+                if (animalBtn) animalBtn.textContent = 'Click to Hear an Animal!';
+                
+                gamesFound = true;
+
+            } else if (age === '1-2') {
+                title.textContent = "Games for 1-2 Year Olds";
+                subtitle.textContent = "Let's practice sounds, match shapes, stack blocks, and find body parts!";
+                gameAnimal.style.display = 'flex';
+                gameShape.style.display = 'flex';
+                gameStacker.style.display = 'flex'; 
+                gameBodypart.style.display = 'flex'; 
+                gamesFound = true;
+
+            } else if (age === '2-3') {
+                title.textContent = "Games for 2-3 Year Olds";
+                subtitle.textContent = "Time to learn shapes, feelings, and more sounds!";
+                gameAnimal.style.display = 'flex';
+                gameShape.style.display = 'flex';
+                gameFeeling.style.display = 'flex';
+                gameBodypart.style.display = 'flex'; // Also good for 2-3
+                gamesFound = true;
+
+            } else { // 3-4, 4-5, or default
+                title.textContent = `Games for ${age} Year Olds`;
+                subtitle.textContent = "Practice colors, shapes, feelings, and sounds!";
+                gameAnimal.style.display = 'flex';
+                gameShape.style.display = 'flex';
+                gameColor.style.display = 'flex';
+                gameFeeling.style.display = 'flex';
+                gameBodypart.style.display = 'flex'; // Also good for 3-4, 4-5
+                gamesFound = true;
+            }
+            
+            if (!gamesFound) {
+                noGamesMessage.style.display = 'block';
+            }
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultation Request | Bright Futures</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-teal-50">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <!-- Back to Home Link -->
+            <a href="./index.html#contact" class="text-2xl font-bold text-teal-700 hover:text-teal-800 transition-colors">
+                &larr; Back to KindliPath
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-16 sm:py-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
+            <!-- Form Card -->
+            <div class="bg-white p-8 sm:p-12 rounded-lg shadow-xl border border-gray-200">
+                <h1 class="text-3xl font-bold text-gray-900 text-center">
+                    Request a Consultation
+                </h1>
+                <p class="mt-4 text-lg text-gray-600 text-center">
+                    We're here to help. Please fill out the form below, and our care coordinator will reach out to you within one business day.
+                </p>
+
+                <!-- Consultation Form -->
+                <form id="consultation-form" class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6">
+                    <!-- Child's Name -->
+                    <div class="sm:col-span-2">
+                        <label for="child-name" class="block text-sm font-medium text-gray-700">Child's Name *</label>
+                        <input type="text" id="child-name" name="child-name" required 
+                               placeholder="Enter Child's name"
+                               class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                    </div>
+
+                    <!-- Guardian's Name -->
+                    <div>
+                        <label for="guardian-name" class="block text-sm font-medium text-gray-700">Guardian's Name *</label>
+                        <input type="text" id="guardian-name" name="guardian-name" required
+                               placeholder="Enter Guardian's name"
+                               class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                    </div>
+
+                    <!-- Gender -->
+                    <div>
+                        <label for="gender" class="block text-sm font-medium text-gray-700">Gender *</label>
+                        <select id="gender" name="gender" required 
+                                class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 bg-white">
+                            <option value="" disabled selected>Please select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+
+                    <!-- Child's Age -->
+                    <div>
+                        <label for="child-age" class="block text-sm font-medium text-gray-700">Child's Age *</label>
+                        <select id="child-age" name="child-age" required 
+                                class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 bg-white">
+                            <option value="" disabled selected>Please select</option>
+                            <option value="0-12m">0-12 months</option>
+                            <option value="1-2y">1-2 years</option>
+                            <option value="2-3y">2-3 years</option>
+                            <option value="3-4y">3-4 years</option>
+                            <option value="4-5y">4-5 years</option>
+                        </select>
+                    </div>
+
+                    <!-- No. of Siblings -->
+                    <div>
+                        <label for="siblings" class="block text-sm font-medium text-gray-700">No. of Siblings *</label>
+                        <input type="number" id="siblings" name="siblings" required min="0" 
+                               placeholder="E.g., 2"
+                               class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                    </div>
+
+                    <!-- Address -->
+                    <div class="sm:col-span-2">
+                        <label for="address" class="block text-sm font-medium text-gray-700">Address *</label>
+                        <textarea id="address" name="address" rows="3" required
+                                  placeholder="Enter your address"
+                                  class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"></textarea>
+                    </div>
+
+                    <!-- Family Psychiatric Condition -->
+                    <div class="sm:col-span-2">
+                        <label for="family-history" class="block text-sm font-medium text-gray-700">Family Psychiatric History (Optional)</label>
+                        <textarea id="family-history" name="family-history" rows="3" 
+                                  placeholder="Please mention any relevant family psychiatric conditions, if any."
+                                  class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"></textarea>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address *</label>
+                        <input type="email" id="email" name="email" required 
+                               placeholder="Enter your email"
+                               class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required 
+                               placeholder="E.g., (+91) 1234567890"
+                               class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                    </div>
+
+                    <!-- Primary Concern -->
+                    <div class="sm:col-span-2">
+                        <label for="concern" class="block text-sm font-medium text-gray-700">Primary Concern *</label>
+                        <select id="concern" name="concern" required 
+                                class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 bg-white">
+                            <option value="" disabled selected>What brings you here today?</option>
+                            <option value="speech">Speech & Language</option>
+                            <option value="motor">Motor Skills</option>
+                            <option value="cognitive">Cognitive Skills</option>
+                            <option value="social">Social & Emotional Skills</option>
+                            <option value="info">Just seeking information</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <!-- Message -->
+                    <div class="sm:col-span-2">
+                        <label for="message" class="block text-sm font-medium text-gray-700">Please share a brief message (Optional)</label>
+                        <textarea id="message" name="message" rows="5" 
+                                  placeholder="e.g., My child is having some trouble with..."
+                                  class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="sm:col-span-2 text-center">
+                        <button type="submit" 
+                                class="mt-4 inline-block w-full sm:w-auto px-10 py-4 bg-teal-600 text-white font-medium text-lg rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                            Submit Request
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Success Message (Hidden by default) -->
+                <div id="success-message" class="hidden mt-10 text-center p-6 bg-green-50 text-green-800 rounded-lg border border-green-200">
+                    <h3 class="text-xl font-semibold">Thank You!</h3>
+                    <p class="mt-2">Your request has been sent. Our team will contact you shortly.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 mt-auto">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center text-gray-500">
+                <p>&copy; 2025 KindliPath. All rights reserved. | <a href="#" class="hover:text-white">Privacy Policy</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form submission logic
+        const form = document.getElementById('consultation-form');
+        const successMessage = document.getElementById('success-message');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent actual form submission
+            
+            // Here you would typically send the form data to a server
+            // For this demo, we'll just hide the form and show the success message
+            
+            form.classList.add('hidden');
+            successMessage.classList.remove('hidden');
+
+            // Scroll to the success message
+            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    </script>
+
+</body>
+</html>
